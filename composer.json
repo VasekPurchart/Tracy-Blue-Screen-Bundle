@@ -1,0 +1,13 @@
+{
+	"name": "vasek-purchart/tracy-blue-screen-bundle",
+	"description": "This bundle lets you use the Tracy's debug screen in combination with the the default profiler in your Symfony application.",
+	"keywords": ["tracy", "bluescreen", "error", "debug", "debugger", "exceptions", "bundle"],
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Vašek Purchart",
+			"email": "me@vasekpurchart.cz",
+			"homepage": "http://vasekpurchart.cz"
+		}
+	]
+}
