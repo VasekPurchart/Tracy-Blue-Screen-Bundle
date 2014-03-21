@@ -16,7 +16,8 @@
 	"require-dev": {
 		"consistence/coding-standard": "0.6",
 		"jakub-onderka/php-console-highlighter": "0.3.1",
-		"jakub-onderka/php-parallel-lint": "0.7"
+		"jakub-onderka/php-parallel-lint": "0.7",
+		"phing/phing": "2.10.1"
 	},
 	"config": {
 		"bin-dir": "bin"
