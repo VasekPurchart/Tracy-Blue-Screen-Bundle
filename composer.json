@@ -15,7 +15,8 @@
 		"symfony/config": "~2.6",
 		"symfony/dependency-injection": "~2.6",
 		"symfony/http-kernel": "~2.6",
-		"symfony/yaml": "~2.6"
+		"symfony/yaml": "~2.6",
+		"tracy/tracy": "~2.3"
 	},
 	"require-dev": {
 		"consistence/coding-standard": "0.6",
