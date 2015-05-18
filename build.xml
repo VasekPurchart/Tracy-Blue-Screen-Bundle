@@ -32,6 +32,11 @@
 		</exec>
 	</target>
 
+	<target name="ci-build" depends="
+		phplint,
+		cs
+	"/>
+
 	<target name="cs">
 		<exec
 			executable="${path.phpcs.executable}"
