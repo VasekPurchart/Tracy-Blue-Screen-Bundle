@@ -26,7 +26,7 @@ This bundle expects that you are using the default Symfony profiler screen rende
 Installation
 -----------
 
-Install with [Composer](http://getcomposer.org/):
+Install package [`vasek-purchart/tracy-blue-screen-bundle`](https://packagist.org/packages/vasek-purchart/tracy-blue-screen-bundle) with [Composer](https://getcomposer.org/):
 
 ```bash
 composer require vasek-purchart/tracy-blue-screen-bundle
