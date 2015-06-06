@@ -1,0 +1,9 @@
+services:
+    vasek_purchart.tracy_blue_screen.blue_screen.console_blue_screen_exception_listener:
+        class: VasekPurchart\TracyBlueScreenBundle\BlueScreen\ConsoleBlueScreenExceptionListener
+        arguments:
+            - @vasek_purchart.tracy_blue_screen.tracy.logger
+        tags:
+            -
+                name: kernel.event_listener
+                event: console.exception
