@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<ruleset name="TracyBlueScreenBundle">
+	<rule ref="../vendor/consistence/coding-standard/Consistence/ruleset.xml">
+		<exclude name="PEAR.WhiteSpace.ObjectOperatorIndent.Incorrect"/><!-- structuring Symfony configuration tree neeeds indentation -->
+	</rule>
+</ruleset>
