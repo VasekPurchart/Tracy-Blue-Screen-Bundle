@@ -4,4 +4,7 @@ services:
         arguments:
             - @vasek_purchart.tracy_blue_screen.tracy.blue_screen
         tags:
-            - { name: kernel.event_listener, event: kernel.exception }
+            -
+                name: kernel.event_listener
+                event: kernel.exception
+                priority: %vasek_purchart.tracy_blue_screen.controller.listener_priority%
