@@ -1,0 +1,9 @@
+services:
+    vasek_purchart.tracy_blue_screen.blue_screen.controller_blue_screen_exception_listener:
+        class: VasekPurchart\TracyBlueScreenBundle\BlueScreen\ControllerBlueScreenExceptionListener
+        arguments:
+            - @vasek_purchart.tracy_blue_screen.tracy.blue_screen
+            - %kernel.environment%
+            - %kernel.debug%
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception }
