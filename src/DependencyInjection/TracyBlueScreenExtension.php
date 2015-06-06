@@ -17,7 +17,13 @@ class TracyBlueScreenExtension extends \Symfony\Component\HttpKernel\DependencyI
 	{
 		$loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/config'));
 		$loader->load('services.yml');
-		$loader->load('controller_listener.yml');
+
+		$environment = $container->getParameter('kernel.environment');
+		$debug = $container->getParameter('kernel.debug');
+
+		if ($environment === 'dev' && $debug === true) {
+			$loader->load('controller_listener.yml');
+		}
 	}
 
 }

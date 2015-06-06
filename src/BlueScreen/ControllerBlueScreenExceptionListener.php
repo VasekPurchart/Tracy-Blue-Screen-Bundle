@@ -13,34 +13,18 @@ class ControllerBlueScreenExceptionListener
 	/** @var \Tracy\BlueScreen */
 	private $blueScreen;
 
-	/** @var string */
-	private $environment;
-
-	/** @var boolean */
-	private $debug;
-
 	/**
 	 * @param \Tracy\BlueScreen $blueScreen
-	 * @param string $environment
-	 * @param boolean $debug
 	 */
 	public function __construct(
-		BlueScreen $blueScreen,
-		$environment,
-		$debug
+		BlueScreen $blueScreen
 	)
 	{
 		$this->blueScreen = $blueScreen;
-		$this->environment = $environment;
-		$this->debug = $debug;
 	}
 
 	public function onKernelException(GetResponseForExceptionEvent $event)
 	{
-		if ($this->environment !== 'dev' || $this->debug === false) {
-			return;
-		}
-
 		$this->forceExceptionControllerHtml($event->getRequest());
 		$this->renderBlueScreen($event->getException());
 	}
