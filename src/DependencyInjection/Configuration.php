@@ -7,6 +7,7 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 class Configuration implements \Symfony\Component\Config\Definition\ConfigurationInterface
 {
 
+	const PARAMETER_CONSOLE_BROWSER = 'browser';
 	const PARAMETER_CONSOLE_LISTENER_PRIORITY = 'listener_priority';
 	const PARAMETER_CONTROLLER_ENABLED = 'enabled';
 	const PARAMETER_CONTROLLER_LISTENER_PRIORITY = 'listener_priority';
@@ -51,6 +52,14 @@ class Configuration implements \Symfony\Component\Config\Definition\Configuratio
 				->arrayNode(self::SECTION_CONSOLE)
 					->addDefaultsIfNotSet()
 					->children()
+						->scalarNode(self::PARAMETER_CONSOLE_BROWSER)
+							->info(
+								'Configure this to open generated BlueScreen in your browser.'
+								. ' Configuration option may be for example \'google-chrome\' or \'firefox\''
+								. ' and it will be invoked as a shell command.'
+							)
+							->defaultNull()
+							->end()
 						->integerNode(self::PARAMETER_CONSOLE_LISTENER_PRIORITY)
 							->info('Priority with which the listener will be registered.')
 							->defaultValue(0)

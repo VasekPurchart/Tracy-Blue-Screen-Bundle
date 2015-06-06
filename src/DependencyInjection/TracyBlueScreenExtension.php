@@ -9,6 +9,7 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 class TracyBlueScreenExtension extends \Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension
 {
 
+	const CONTAINER_PARAMETER_CONSOLE_BROWSER = 'vasek_purchart.tracy_blue_screen.console.browser';
 	const CONTAINER_PARAMETER_CONSOLE_LISTENER_PRIORITY = 'vasek_purchart.tracy_blue_screen.console.listener_priority';
 	const CONTAINER_PARAMETER_CONTROLLER_LISTENER_PRIORITY = 'vasek_purchart.tracy_blue_screen.controller.listener_priority';
 
@@ -18,6 +19,10 @@ class TracyBlueScreenExtension extends \Symfony\Component\HttpKernel\DependencyI
 	 */
 	public function loadInternal(array $mergedConfig, ContainerBuilder $container)
 	{
+		$container->setParameter(
+			self::CONTAINER_PARAMETER_CONSOLE_BROWSER,
+			$mergedConfig[Configuration::SECTION_CONSOLE][Configuration::PARAMETER_CONSOLE_BROWSER]
+		);
 		$container->setParameter(
 			self::CONTAINER_PARAMETER_CONSOLE_LISTENER_PRIORITY,
 			$mergedConfig[Configuration::SECTION_CONSOLE][Configuration::PARAMETER_CONSOLE_LISTENER_PRIORITY]

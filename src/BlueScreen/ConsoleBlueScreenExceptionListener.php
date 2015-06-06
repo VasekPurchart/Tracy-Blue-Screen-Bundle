@@ -16,11 +16,20 @@ class ConsoleBlueScreenExceptionListener
 	/** @var \Tracy\Logger */
 	private $tracyLogger;
 
+	/** @var string|null */
+	private $browser;
+
+	/**
+	 * @param \Tracy\Logger $tracyLogger
+	 * @param string|null $browser
+	 */
 	public function __construct(
-		TracyLogger $tracyLogger
+		TracyLogger $tracyLogger,
+		$browser
 	)
 	{
 		$this->tracyLogger = $tracyLogger;
+		$this->browser = $browser;
 	}
 
 	public function onConsoleException(ConsoleExceptionEvent $event)
@@ -44,6 +53,10 @@ class ConsoleBlueScreenExceptionListener
 
 		$output = $event->getOutput();
 		$this->printErrorMessage($output, sprintf('BlueScreen saved in file: %s', $exceptionFile));
+		if ($this->browser === null) {
+			return;
+		}
+		$this->openBrowser($this->browser, $exceptionFile);
 	}
 
 	/**
@@ -58,6 +71,21 @@ class ConsoleBlueScreenExceptionListener
 		} else {
 			$output->writeln($message);
 		}
+	}
+
+	/**
+	 * @param string $browser
+	 * @param string $file
+	 */
+	private function openBrowser($browser, $file)
+	{
+		static $showed = false;
+		if ($showed) {
+			return;
+		}
+
+		exec(sprintf('%s %s', $browser, escapeshellarg($file)));
+		$showed = true;
 	}
 
 }
