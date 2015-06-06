@@ -7,7 +7,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 
 use Tracy\Debugger;
 
-class BlueScreenExceptionListener
+class ControllerBlueScreenExceptionListener
 {
 
 	/** @var string */
