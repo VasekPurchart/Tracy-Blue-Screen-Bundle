@@ -7,9 +7,11 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 class Configuration implements \Symfony\Component\Config\Definition\ConfigurationInterface
 {
 
+	const PARAMETER_CONSOLE_LISTENER_PRIORITY = 'listener_priority';
 	const PARAMETER_CONTROLLER_ENABLED = 'enabled';
 	const PARAMETER_CONTROLLER_LISTENER_PRIORITY = 'listener_priority';
 
+	const SECTION_CONSOLE = 'console';
 	const SECTION_CONTROLLER = 'controller';
 
 	/** @var string */
@@ -41,6 +43,15 @@ class Configuration implements \Symfony\Component\Config\Definition\Configuratio
 							->defaultNull()
 							->end()
 						->integerNode(self::PARAMETER_CONTROLLER_LISTENER_PRIORITY)
+							->info('Priority with which the listener will be registered.')
+							->defaultValue(0)
+							->end()
+						->end()
+					->end()
+				->arrayNode(self::SECTION_CONSOLE)
+					->addDefaultsIfNotSet()
+					->children()
+						->integerNode(self::PARAMETER_CONSOLE_LISTENER_PRIORITY)
 							->info('Priority with which the listener will be registered.')
 							->defaultValue(0)
 							->end()

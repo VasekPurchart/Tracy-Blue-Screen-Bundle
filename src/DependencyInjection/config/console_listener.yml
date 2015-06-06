@@ -7,3 +7,4 @@ services:
             -
                 name: kernel.event_listener
                 event: console.exception
+                priority: %vasek_purchart.tracy_blue_screen.console.listener_priority%
