@@ -17,23 +17,33 @@ class ConsoleBlueScreenExceptionListener
 	private $tracyLogger;
 
 	/** @var string|null */
+	private $logDirectory;
+
+	/** @var string|null */
 	private $browser;
 
 	/**
 	 * @param \Tracy\Logger $tracyLogger
+	 * @param string|null $logDirectory
 	 * @param string|null $browser
 	 */
 	public function __construct(
 		TracyLogger $tracyLogger,
+		$logDirectory,
 		$browser
 	)
 	{
 		$this->tracyLogger = $tracyLogger;
+		$this->logDirectory = $logDirectory;
 		$this->browser = $browser;
 	}
 
 	public function onConsoleException(ConsoleExceptionEvent $event)
 	{
+		if ($this->tracyLogger->directory === null) {
+			$this->tracyLogger->directory = $this->logDirectory;
+		}
+
 		if (
 			$this->tracyLogger->directory === null
 			|| !is_dir($this->tracyLogger->directory)
