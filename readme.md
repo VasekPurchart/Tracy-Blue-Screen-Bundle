@@ -29,18 +29,20 @@ Installation
 Install package [`vasek-purchart/tracy-blue-screen-bundle`](https://packagist.org/packages/vasek-purchart/tracy-blue-screen-bundle) with [Composer](https://getcomposer.org/):
 
 ```bash
-composer require vasek-purchart/tracy-blue-screen-bundle
+composer require --dev vasek-purchart/tracy-blue-screen-bundle
 ```
 
-Register the bundle in your application kernel:
+Register the bundle in your application kernel only for `dev` or `test` environments:
 ```php
 // app/AppKernel.php
 public function registerBundles()
 {
-	return array(
-		// ...
-		new VasekPurchart\TracyBlueScreenBundle\TracyBlueScreenBundle(),
-	);
+	// ...
+	if (in_array($this->getEnvironment(), array('dev', 'test'))) {
+		$bundles[] = new VasekPurchart\TracyBlueScreenBundle\TracyBlueScreenBundle();
+	}
+
+	return $bundles;
 }
 ```
 
