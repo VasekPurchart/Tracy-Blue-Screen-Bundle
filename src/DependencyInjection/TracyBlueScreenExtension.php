@@ -43,7 +43,13 @@ class TracyBlueScreenExtension extends \Symfony\Component\HttpKernel\DependencyI
 		$environment = $container->getParameter('kernel.environment');
 		$debug = $container->getParameter('kernel.debug');
 
-		$loader->load('console_listener.yml');
+		if ($this->isEnabled(
+			$mergedConfig[Configuration::SECTION_CONSOLE][Configuration::PARAMETER_CONSOLE_ENABLED],
+			$environment,
+			$debug
+		)) {
+			$loader->load('console_listener.yml');
+		}
 		if ($this->isEnabled(
 			$mergedConfig[Configuration::SECTION_CONTROLLER][Configuration::PARAMETER_CONTROLLER_ENABLED],
 			$environment,

@@ -10,6 +10,7 @@ class Configuration implements \Symfony\Component\Config\Definition\Configuratio
 {
 
 	const PARAMETER_CONSOLE_BROWSER = 'browser';
+	const PARAMETER_CONSOLE_ENABLED = 'enabled';
 	const PARAMETER_CONSOLE_LISTENER_PRIORITY = 'listener_priority';
 	const PARAMETER_CONSOLE_LOG_DIRECTORY = 'log_directory';
 	const PARAMETER_CONTROLLER_ENABLED = 'enabled';
@@ -60,6 +61,10 @@ class Configuration implements \Symfony\Component\Config\Definition\Configuratio
 				->arrayNode(self::SECTION_CONSOLE)
 					->addDefaultsIfNotSet()
 					->children()
+						->scalarNode(self::PARAMETER_CONSOLE_ENABLED)
+							->info('Enable debug screen for console.')
+							->defaultNull()
+							->end()
 						->scalarNode(self::PARAMETER_CONSOLE_LOG_DIRECTORY)
 							->info(
 								'Directory, where BlueScreens for console will be stored.'
