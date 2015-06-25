@@ -28,7 +28,11 @@ class TracyBlueScreenExtension extends \Symfony\Component\HttpKernel\DependencyI
 		$environment = $container->getParameter('kernel.environment');
 		$debug = $container->getParameter('kernel.debug');
 
-		if ($environment === 'dev' && $debug === true) {
+		if ($this->isEnabled(
+			$mergedConfig[Configuration::SECTION_CONTROLLER][Configuration::PARAMETER_CONTROLLER_ENABLED],
+			$environment,
+			$debug
+		)) {
 			$loader->load('controller_listener.yml');
 		}
 	}
@@ -43,6 +47,21 @@ class TracyBlueScreenExtension extends \Symfony\Component\HttpKernel\DependencyI
 		return new Configuration(
 			$this->getAlias()
 		);
+	}
+
+	/**
+	 * @param boolean|null $configOption
+	 * @param string $environment
+	 * @param boolean $debug
+	 * @return boolean
+	 */
+	private function isEnabled($configOption, $environment, $debug)
+	{
+		if ($configOption === null) {
+			return $environment === 'dev' && $debug === true;
+		}
+
+		return $configOption;
 	}
 
 }

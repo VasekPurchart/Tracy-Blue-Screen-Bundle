@@ -7,6 +7,7 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 class Configuration implements \Symfony\Component\Config\Definition\ConfigurationInterface
 {
 
+	const PARAMETER_CONTROLLER_ENABLED = 'enabled';
 	const PARAMETER_CONTROLLER_LISTENER_PRIORITY = 'listener_priority';
 
 	const SECTION_CONTROLLER = 'controller';
@@ -35,6 +36,10 @@ class Configuration implements \Symfony\Component\Config\Definition\Configuratio
 				->arrayNode(self::SECTION_CONTROLLER)
 					->addDefaultsIfNotSet()
 					->children()
+						->scalarNode(self::PARAMETER_CONTROLLER_ENABLED)
+							->info('Enable debug screen for controllers.')
+							->defaultNull()
+							->end()
 						->integerNode(self::PARAMETER_CONTROLLER_LISTENER_PRIORITY)
 							->info('Priority with which the listener will be registered.')
 							->defaultValue(0)
