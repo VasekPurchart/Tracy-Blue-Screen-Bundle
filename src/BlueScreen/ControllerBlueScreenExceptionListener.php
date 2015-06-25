@@ -5,33 +5,26 @@ namespace VasekPurchart\TracyBlueScreenBundle\BlueScreen;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 
-use Tracy\Debugger;
+use Tracy\BlueScreen;
 
-class BlueScreenExceptionListener
+class ControllerBlueScreenExceptionListener
 {
 
-	/** @var string */
-	private $environment;
-
-	/** @var boolean */
-	private $debug;
+	/** @var \Tracy\BlueScreen */
+	private $blueScreen;
 
 	/**
-	 * @param string $environment
-	 * @param boolean $debug
+	 * @param \Tracy\BlueScreen $blueScreen
 	 */
-	public function __construct($environment, $debug)
+	public function __construct(
+		BlueScreen $blueScreen
+	)
 	{
-		$this->environment = $environment;
-		$this->debug = $debug;
+		$this->blueScreen = $blueScreen;
 	}
 
 	public function onKernelException(GetResponseForExceptionEvent $event)
 	{
-		if ($this->environment !== 'dev' || $this->debug === false) {
-			return;
-		}
-
 		$this->forceExceptionControllerHtml($event->getRequest());
 		$this->renderBlueScreen($event->getException());
 	}
@@ -51,7 +44,7 @@ class BlueScreenExceptionListener
 			header('Content-Type: text/html; charset=UTF-8');
 		}
 
-		Debugger::getBlueScreen()->render($exception);
+		$this->blueScreen->render($exception);
 	}
 
 }

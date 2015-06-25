@@ -21,6 +21,8 @@ Usage
 
 If you do not have any custom `kernel.exception` listeners this works out of the box. However if you have any, you have to ensure that they do not return any response, because that prevents the profiler from showing up (the same applies for the default Symfony exception screen).
 
+If you need to change the default position of this listener (see order in `app/console debug:event-dispatcher`), use the configuration option `listener_priority`.
+
 This bundle expects that you are using the default Symfony profiler screen rendered via the [TwigBundle](http://symfony.com/doc/current/reference/configuration/twig.html), which must be registered.
 
 If you want to configure your application to always convert warnings and notices to exceptions use the `debug.error_handler.throw_at` parameter (see [PHP manual](http://php.net/manual/en/errorfunc.constants.php) for other available values):
@@ -30,6 +32,34 @@ parameters:
 ```
 
 This bundle does not provide a dedicated logging functionality. If you want to use Tracy for logging e.g. in production use the [monolog-extensions-bundle](https://github.com/pavelkucera/monolog-extensions-bundle/), which provides a Tracy Monolog handler.
+
+Configuration
+-------------
+
+Configuration structure with listed default values:
+
+```yaml
+tracy_blue_screen:
+    controller:
+        # Enable debug screen for controllers.
+        # Enabled by default only in dev environment with debug mode on.
+        enabled:              ~
+        # Priority with which the listener will be registered.
+        listener_priority:    0
+```
+
+You can also override services used internally, for example if you need to specify options for the BlueScreen instance, you can provide custom instance with an [alias](http://symfony.com/doc/current/components/dependency_injection/advanced.html#aliasing):
+
+```yaml
+services:
+    my_blue_screen:
+        class: Tracy\BlueScreen
+        properties:
+            info:
+                - 'environment: %kernel.environment%'
+
+    vasek_purchart.tracy_blue_screen.tracy.blue_screen: @my_blue_screen
+```
 
 Installation
 -----------
