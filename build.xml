@@ -11,14 +11,19 @@
 	<property name="path.phpcs.executable" value="${path.bin}/phpcs"/>
 	<property name="path.phpcs.ruleset" value="${path.build}/cs-ruleset.xml"/>
 	<property name="path.phplint.executable" value="${path.bin}/parallel-lint"/>
+	<property name="path.phpunit.configuration" value="${path.tests}/phpunit.xml"/>
+	<property name="path.phpunit.executable" value="${path.bin}/phpunit"/>
 	<property name="path.root" value="${project.basedir}"/>
 	<property name="path.src" value="${path.root}/src"/>
+	<property name="path.tests" value="${path.root}/tests"/>
+	<property name="path.tests.coverage.clover" value="${path.build}/log/coverage/clover.xml"/>
 	<property name="path.vendor" value="${path.root}/vendor"/>
 
 	<target name="build" depends="
 		composer,
 		phplint,
-		cs
+		cs,
+		tests
 	"/>
 
 	<target name="composer">
@@ -34,8 +39,24 @@
 
 	<target name="ci-build" depends="
 		phplint,
-		cs
+		cs,
+		ci-tests
 	"/>
+
+	<target name="ci-tests">
+		<exec
+			executable="${path.phpunit.executable}"
+			logoutput="true"
+			passthru="true"
+			checkreturn="true"
+		>
+			<arg value="--configuration"/>
+			<arg value="${path.phpunit.configuration}"/>
+			<arg value="--coverage-clover"/>
+			<arg value="${path.tests.coverage.clover}"/>
+			<arg path="${path.tests}"/>
+		</exec>
+	</target>
 
 	<target name="cs">
 		<exec
@@ -60,6 +81,19 @@
 			checkreturn="true"
 		>
 			<arg path="${path.src}"/>
+		</exec>
+	</target>
+
+	<target name="tests">
+		<exec
+			executable="${path.phpunit.executable}"
+			logoutput="true"
+			passthru="true"
+			checkreturn="true"
+		>
+			<arg value="--configuration"/>
+			<arg value="${path.phpunit.configuration}"/>
+			<arg path="${path.tests}"/>
 		</exec>
 	</target>
 

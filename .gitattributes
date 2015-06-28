@@ -4,3 +4,4 @@
 /build export-ignore
 /build.xml export-ignore
 /composer.lock export-ignore -merge
+/tests export-ignore
