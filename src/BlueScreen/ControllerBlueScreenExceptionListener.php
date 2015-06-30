@@ -38,11 +38,14 @@ class ControllerBlueScreenExceptionListener
 	private function renderBlueScreen(\Exception $exception)
 	{
 		if (!headers_sent()) {
+			// @codeCoverageIgnoreStart
+			// sends output and uses global state
 			$protocol = isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.1';
 			$code = isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE ') !== false ? 503 : 500;
 			header($protocol . ' ' . $code, true, $code);
 			header('Content-Type: text/html; charset=UTF-8');
 		}
+		// @codeCoverageIgnoreEnd
 
 		$this->blueScreen->render($exception);
 	}

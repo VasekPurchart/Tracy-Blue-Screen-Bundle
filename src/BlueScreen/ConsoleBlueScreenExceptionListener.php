@@ -66,8 +66,11 @@ class ConsoleBlueScreenExceptionListener
 		if ($this->browser === null) {
 			return;
 		}
+		// @codeCoverageIgnoreStart
+		// uses global state
 		$this->openBrowser($this->browser, $exceptionFile);
 	}
+	// @codeCoverageIgnoreEnd
 
 	/**
 	 * @param \Symfony\Component\Console\Output\OutputInterface $output
@@ -84,6 +87,8 @@ class ConsoleBlueScreenExceptionListener
 	}
 
 	/**
+	 * @codeCoverageIgnore uses global state
+	 *
 	 * @param string $browser
 	 * @param string $file
 	 */

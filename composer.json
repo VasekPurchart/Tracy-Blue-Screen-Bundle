@@ -23,11 +23,19 @@
 		"consistence/coding-standard": "0.6",
 		"jakub-onderka/php-console-highlighter": "0.3.2",
 		"jakub-onderka/php-parallel-lint": "0.9",
-		"phing/phing": "2.11.0"
+		"matthiasnoback/symfony-dependency-injection-test": "0.7.4",
+		"mikey179/vfsStream": "1.5",
+		"phing/phing": "2.11.0",
+		"phpunit/phpunit": "4.7.6"
 	},
 	"autoload": {
 		"psr-4": {
 			"VasekPurchart\\TracyBlueScreenBundle\\": "src"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"VasekPurchart\\TracyBlueScreenBundle\\": "tests"
 		}
 	},
 	"config": {
