@@ -9,6 +9,7 @@ use Tracy\Logger as TracyLogger;
 class Configuration implements \Symfony\Component\Config\Definition\ConfigurationInterface
 {
 
+	const PARAMETER_COLLAPSE_PATHS = 'collapse_paths';
 	const PARAMETER_CONSOLE_BROWSER = 'browser';
 	const PARAMETER_CONSOLE_ENABLED = 'enabled';
 	const PARAMETER_CONSOLE_LISTENER_PRIORITY = 'listener_priority';
@@ -16,6 +17,7 @@ class Configuration implements \Symfony\Component\Config\Definition\Configuratio
 	const PARAMETER_CONTROLLER_ENABLED = 'enabled';
 	const PARAMETER_CONTROLLER_LISTENER_PRIORITY = 'listener_priority';
 
+	const SECTION_BLUE_SCREEN = 'blue_screen';
 	const SECTION_CONSOLE = 'console';
 	const SECTION_CONTROLLER = 'controller';
 
@@ -23,16 +25,31 @@ class Configuration implements \Symfony\Component\Config\Definition\Configuratio
 	private $rootNode;
 
 	/** @var string */
+	private $kernelRootDir;
+
+	/** @var string */
 	private $kernelLogsDir;
+
+	/** @var string */
+	private $kernelCacheDir;
 
 	/**
 	 * @param string $rootNode
+	 * @param string $kernelRootDir
 	 * @param string $kernelLogsDir
+	 * @param string $kernelCacheDir
 	 */
-	public function __construct($rootNode, $kernelLogsDir)
+	public function __construct(
+		$rootNode,
+		$kernelRootDir,
+		$kernelLogsDir,
+		$kernelCacheDir
+	)
 	{
 		$this->rootNode = $rootNode;
+		$this->kernelRootDir = $kernelRootDir;
 		$this->kernelLogsDir = $kernelLogsDir;
+		$this->kernelCacheDir = $kernelCacheDir;
 	}
 
 	/**
@@ -84,6 +101,20 @@ class Configuration implements \Symfony\Component\Config\Definition\Configuratio
 						->integerNode(self::PARAMETER_CONSOLE_LISTENER_PRIORITY)
 							->info('Priority with which the listener will be registered.')
 							->defaultValue(0)
+							->end()
+						->end()
+					->end()
+				->arrayNode(self::SECTION_BLUE_SCREEN)
+					->addDefaultsIfNotSet()
+					->children()
+						->arrayNode(self::PARAMETER_COLLAPSE_PATHS)
+							->info('Add paths which should be collapsed (for external/compiled code) so that actual error is expanded.')
+							->prototype('scalar')
+								->end()
+							->defaultValue([
+								$this->kernelRootDir . '/bootstrap.php.cache',
+								$this->kernelCacheDir,
+							])
 							->end()
 						->end()
 					->end()

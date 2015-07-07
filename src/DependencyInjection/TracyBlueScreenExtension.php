@@ -9,6 +9,7 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 class TracyBlueScreenExtension extends \Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension
 {
 
+	const CONTAINER_PARAMETER_BLUE_SCREEN_COLLAPSE_PATHS = 'vasek_purchart.tracy_blue_screen.blue_screen.collapse_paths';
 	const CONTAINER_PARAMETER_CONSOLE_BROWSER = 'vasek_purchart.tracy_blue_screen.console.browser';
 	const CONTAINER_PARAMETER_CONSOLE_LISTENER_PRIORITY = 'vasek_purchart.tracy_blue_screen.console.listener_priority';
 	const CONTAINER_PARAMETER_CONSOLE_LOG_DIRECTORY = 'vasek_purchart.tracy_blue_screen.console.log_directory';
@@ -20,6 +21,10 @@ class TracyBlueScreenExtension extends \Symfony\Component\HttpKernel\DependencyI
 	 */
 	public function loadInternal(array $mergedConfig, ContainerBuilder $container)
 	{
+		$container->setParameter(
+			self::CONTAINER_PARAMETER_BLUE_SCREEN_COLLAPSE_PATHS,
+			$mergedConfig[Configuration::SECTION_BLUE_SCREEN][Configuration::PARAMETER_COLLAPSE_PATHS]
+		);
 		$container->setParameter(
 			self::CONTAINER_PARAMETER_CONSOLE_BROWSER,
 			$mergedConfig[Configuration::SECTION_CONSOLE][Configuration::PARAMETER_CONSOLE_BROWSER]
@@ -68,7 +73,9 @@ class TracyBlueScreenExtension extends \Symfony\Component\HttpKernel\DependencyI
 	{
 		return new Configuration(
 			$this->getAlias(),
-			$container->getParameter('kernel.logs_dir')
+			$container->getParameter('kernel.root_dir'),
+			$container->getParameter('kernel.logs_dir'),
+			$container->getParameter('kernel.cache_dir')
 		);
 	}
 

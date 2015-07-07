@@ -75,6 +75,15 @@ tracy_blue_screen:
 
         # Priority with which the listener will be registered.
         listener_priority: 0
+
+    blue_screen:
+        # Add paths which should be collapsed (for external/compiled code) so that actual error is expanded.
+        collapse_paths:
+            # Defaults:
+            - %kernel.root_dir%/bootstrap.php.cache
+            - %kernel.cache_dir%
+            # plus paths set in BlueScreen instance used (/vendor)
+
 ```
 
 You can also override services used internally, for example if you need to specify options for the BlueScreen instance, you can provide custom instance with an [alias](http://symfony.com/doc/current/components/dependency_injection/advanced.html#aliasing):
