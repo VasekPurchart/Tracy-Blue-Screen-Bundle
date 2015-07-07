@@ -27,12 +27,12 @@ class Configuration implements \Symfony\Component\Config\Definition\Configuratio
 
 	/**
 	 * @param string $rootNode
-	 * @param string $kernelsLogDir
+	 * @param string $kernelLogsDir
 	 */
-	public function __construct($rootNode, $kernelsLogDir)
+	public function __construct($rootNode, $kernelLogsDir)
 	{
 		$this->rootNode = $rootNode;
-		$this->kernelLogsDir = $kernelsLogDir;
+		$this->kernelLogsDir = $kernelLogsDir;
 	}
 
 	/**
