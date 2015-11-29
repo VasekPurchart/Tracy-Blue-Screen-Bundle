@@ -11,7 +11,7 @@
 		}
 	],
 	"require": {
-		"php": "~5.5",
+		"php": "~5.5|~7.0",
 		"symfony/config": "~2.6",
 		"symfony/console": "~2.6",
 		"symfony/dependency-injection": "~2.6",
@@ -20,7 +20,7 @@
 		"tracy/tracy": "~2.3"
 	},
 	"require-dev": {
-		"consistence/coding-standard": "0.6",
+		"consistence/coding-standard": "0.8",
 		"jakub-onderka/php-console-highlighter": "0.3.2",
 		"jakub-onderka/php-parallel-lint": "0.9",
 		"matthiasnoback/symfony-dependency-injection-test": "0.7.4",
