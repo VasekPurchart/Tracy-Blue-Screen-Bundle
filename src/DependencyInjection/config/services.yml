@@ -1,12 +1,12 @@
 services:
-    vasek_purchart.tracy_blue_screen.tracy.blue_screen: @vasek_purchart.tracy_blue_screen.tracy.blue_screen.default
+    vasek_purchart.tracy_blue_screen.tracy.blue_screen: '@vasek_purchart.tracy_blue_screen.tracy.blue_screen.default'
 
     vasek_purchart.tracy_blue_screen.tracy.blue_screen.default:
         class: Tracy\BlueScreen
         factory: [Tracy\Debugger, getBlueScreen]
         public: false
 
-    vasek_purchart.tracy_blue_screen.tracy.logger: @vasek_purchart.tracy_blue_screen.tracy.logger.default
+    vasek_purchart.tracy_blue_screen.tracy.logger: '@vasek_purchart.tracy_blue_screen.tracy.logger.default'
 
     vasek_purchart.tracy_blue_screen.tracy.logger.default:
         class: Tracy\Logger

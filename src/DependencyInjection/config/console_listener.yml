@@ -2,7 +2,7 @@ services:
     vasek_purchart.tracy_blue_screen.blue_screen.console_blue_screen_exception_listener:
         class: VasekPurchart\TracyBlueScreenBundle\BlueScreen\ConsoleBlueScreenExceptionListener
         arguments:
-            - @vasek_purchart.tracy_blue_screen.tracy.logger
+            - '@vasek_purchart.tracy_blue_screen.tracy.logger'
             - %vasek_purchart.tracy_blue_screen.console.log_directory%
             - %vasek_purchart.tracy_blue_screen.console.browser%
         tags:
