@@ -7,4 +7,4 @@ services:
             -
                 name: kernel.event_listener
                 event: kernel.exception
-                priority: %vasek_purchart.tracy_blue_screen.controller.listener_priority%
+                priority: '%vasek_purchart.tracy_blue_screen.controller.listener_priority%'
