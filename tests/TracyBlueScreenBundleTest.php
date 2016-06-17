@@ -2,7 +2,7 @@
 
 namespace VasekPurchart\TracyBlueScreenBundle;
 
-class TracyBlueScreenBundleTest extends \PHPUnit_Framework_TestCase
+class TracyBlueScreenBundleTest extends \PHPUnit\Framework\TestCase
 {
 
 	public function testDependsOnTwig()

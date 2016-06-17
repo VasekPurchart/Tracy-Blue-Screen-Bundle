@@ -12,16 +12,16 @@ use Tracy\Logger as TracyLogger;
 
 use org\bovigo\vfs\vfsStream;
 
-class ConsoleBlueScreenExceptionListenerTest extends \PHPUnit_Framework_TestCase
+class ConsoleBlueScreenExceptionListenerTest extends \PHPUnit\Framework\TestCase
 {
 
 	public function testLogTracy()
 	{
 		vfsStream::setup('tracy');
 
-		$command = $this->getMockBuilder(Command::class)->disableOriginalConstructor()->getMock();
-		$input = $this->getMock(InputInterface::class);
-		$output = $this->getMock(OutputInterface::class);
+		$command = $this->createMock(Command::class);
+		$input = $this->createMock(InputInterface::class);
+		$output = $this->createMock(OutputInterface::class);
 		$output
 			->expects($this->once())
 			->method('writeln')
@@ -30,7 +30,7 @@ class ConsoleBlueScreenExceptionListenerTest extends \PHPUnit_Framework_TestCase
 
 		$event = new ConsoleExceptionEvent($command, $input, $output, $exception, 1);
 
-		$logger = $this->getMockBuilder(TracyLogger::class)->disableOriginalConstructor()->getMock();
+		$logger = $this->createMock(TracyLogger::class);
 
 		$listener = new ConsoleBlueScreenExceptionListener($logger, vfsStream::url('tracy'), null);
 		$listener->onConsoleException($event);
@@ -40,14 +40,14 @@ class ConsoleBlueScreenExceptionListenerTest extends \PHPUnit_Framework_TestCase
 	{
 		vfsStream::setup('tracy');
 
-		$command = $this->getMockBuilder(Command::class)->disableOriginalConstructor()->getMock();
-		$input = $this->getMock(InputInterface::class);
-		$errorOutput = $this->getMock(OutputInterface::class);
+		$command = $this->createMock(Command::class);
+		$input = $this->createMock(InputInterface::class);
+		$errorOutput = $this->createMock(OutputInterface::class);
 		$errorOutput
 			->expects($this->once())
 			->method('writeln')
 			->with($this->stringContains('saved in file'));
-		$output = $this->getMock(ConsoleOutputInterface::class);
+		$output = $this->createMock(ConsoleOutputInterface::class);
 		$output
 			->expects($this->once())
 			->method('getErrorOutput')
@@ -57,7 +57,7 @@ class ConsoleBlueScreenExceptionListenerTest extends \PHPUnit_Framework_TestCase
 
 		$event = new ConsoleExceptionEvent($command, $input, $output, $exception, 1);
 
-		$logger = $this->getMockBuilder(TracyLogger::class)->disableOriginalConstructor()->getMock();
+		$logger = $this->createMock(TracyLogger::class);
 
 		$listener = new ConsoleBlueScreenExceptionListener($logger, vfsStream::url('tracy'), null);
 		$listener->onConsoleException($event);
@@ -65,18 +65,18 @@ class ConsoleBlueScreenExceptionListenerTest extends \PHPUnit_Framework_TestCase
 
 	public function testMissingLogDir()
 	{
-		$command = $this->getMockBuilder(Command::class)->disableOriginalConstructor()->getMock();
-		$input = $this->getMock(InputInterface::class);
-		$output = $this->getMock(OutputInterface::class);
+		$command = $this->createMock(Command::class);
+		$input = $this->createMock(InputInterface::class);
+		$output = $this->createMock(OutputInterface::class);
 		$exception = new \Exception('Foobar!');
 
 		$event = new ConsoleExceptionEvent($command, $input, $output, $exception, 1);
 
-		$logger = $this->getMockBuilder(TracyLogger::class)->disableOriginalConstructor()->getMock();
+		$logger = $this->createMock(TracyLogger::class);
 
 		$listener = new ConsoleBlueScreenExceptionListener($logger, null, null);
 
-		$this->setExpectedException(\InvalidArgumentException::class);
+		$this->expectException(\InvalidArgumentException::class);
 
 		$listener->onConsoleException($event);
 	}
