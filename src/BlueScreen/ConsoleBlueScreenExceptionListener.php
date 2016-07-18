@@ -8,6 +8,7 @@ use Symfony\Component\Console\Event\ConsoleExceptionEvent;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use Tracy\BlueScreen;
 use Tracy\Logger as TracyLogger;
 
 class ConsoleBlueScreenExceptionListener
@@ -15,6 +16,9 @@ class ConsoleBlueScreenExceptionListener
 
 	/** @var \Tracy\Logger */
 	private $tracyLogger;
+
+	/** @var \Tracy\BlueScreen */
+	private $blueScreen;
 
 	/** @var string|null */
 	private $logDirectory;
@@ -24,16 +28,19 @@ class ConsoleBlueScreenExceptionListener
 
 	/**
 	 * @param \Tracy\Logger $tracyLogger
+	 * @param \Tracy\BlueScreen $blueScreen
 	 * @param string|null $logDirectory
 	 * @param string|null $browser
 	 */
 	public function __construct(
 		TracyLogger $tracyLogger,
+		BlueScreen $blueScreen,
 		$logDirectory,
 		$browser
 	)
 	{
 		$this->tracyLogger = $tracyLogger;
+		$this->blueScreen = $blueScreen;
 		$this->logDirectory = $logDirectory;
 		$this->browser = $browser;
 	}
@@ -56,10 +63,9 @@ class ConsoleBlueScreenExceptionListener
 			), 0, $event->getException());
 		}
 
-		$loggerReflection = new ReflectionClass($this->tracyLogger);
-		$exceptionFileMethodReflection = $loggerReflection->getMethod('logException');
-		$exceptionFileMethodReflection->setAccessible(true);
-		$exceptionFile = $exceptionFileMethodReflection->invoke($this->tracyLogger, $event->getException());
+		$exception = $event->getException();
+		$exceptionFile = $this->tracyLogger->getExceptionFile($exception);
+		$this->blueScreen->renderToFile($exception, $exceptionFile);
 
 		$output = $event->getOutput();
 		$this->printErrorMessage($output, sprintf('BlueScreen saved in file: %s', $exceptionFile));

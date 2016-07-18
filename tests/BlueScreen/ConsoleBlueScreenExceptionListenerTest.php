@@ -8,6 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use Tracy\BlueScreen;
 use Tracy\Logger as TracyLogger;
 
 use org\bovigo\vfs\vfsStream;
@@ -18,6 +19,8 @@ class ConsoleBlueScreenExceptionListenerTest extends \PHPUnit\Framework\TestCase
 	public function testLogTracy()
 	{
 		vfsStream::setup('tracy');
+		$directory = vfsStream::url('tracy');
+		$file = $directory . '/exception.html';
 
 		$command = $this->createMock(Command::class);
 		$input = $this->createMock(InputInterface::class);
@@ -31,14 +34,32 @@ class ConsoleBlueScreenExceptionListenerTest extends \PHPUnit\Framework\TestCase
 		$event = new ConsoleExceptionEvent($command, $input, $output, $exception, 1);
 
 		$logger = $this->createMock(TracyLogger::class);
+		$logger
+			->expects($this->once())
+			->method('getExceptionFile')
+			->with($exception)
+			->will($this->returnValue($file));
 
-		$listener = new ConsoleBlueScreenExceptionListener($logger, vfsStream::url('tracy'), null);
+		$blueScreen = $this->createMock(BlueScreen::class);
+		$blueScreen
+			->expects($this->once())
+			->method('renderToFile')
+			->with($exception, $file);
+
+		$listener = new ConsoleBlueScreenExceptionListener(
+			$logger,
+			$blueScreen,
+			$directory,
+			null
+		);
 		$listener->onConsoleException($event);
 	}
 
 	public function testUsesErrorOutputIfPossible()
 	{
 		vfsStream::setup('tracy');
+		$directory = vfsStream::url('tracy');
+		$file = $directory . '/exception.html';
 
 		$command = $this->createMock(Command::class);
 		$input = $this->createMock(InputInterface::class);
@@ -58,8 +79,24 @@ class ConsoleBlueScreenExceptionListenerTest extends \PHPUnit\Framework\TestCase
 		$event = new ConsoleExceptionEvent($command, $input, $output, $exception, 1);
 
 		$logger = $this->createMock(TracyLogger::class);
+		$logger
+			->expects($this->once())
+			->method('getExceptionFile')
+			->with($exception)
+			->will($this->returnValue($file));
 
-		$listener = new ConsoleBlueScreenExceptionListener($logger, vfsStream::url('tracy'), null);
+		$blueScreen = $this->createMock(BlueScreen::class);
+		$blueScreen
+			->expects($this->once())
+			->method('renderToFile')
+			->with($exception, $file);
+
+		$listener = new ConsoleBlueScreenExceptionListener(
+			$logger,
+			$blueScreen,
+			$directory,
+			null
+		);
 		$listener->onConsoleException($event);
 	}
 
@@ -73,8 +110,14 @@ class ConsoleBlueScreenExceptionListenerTest extends \PHPUnit\Framework\TestCase
 		$event = new ConsoleExceptionEvent($command, $input, $output, $exception, 1);
 
 		$logger = $this->createMock(TracyLogger::class);
+		$blueScreen = $this->createMock(BlueScreen::class);
 
-		$listener = new ConsoleBlueScreenExceptionListener($logger, null, null);
+		$listener = new ConsoleBlueScreenExceptionListener(
+			$logger,
+			$blueScreen,
+			null,
+			null
+		);
 
 		$this->expectException(\InvalidArgumentException::class);
 
