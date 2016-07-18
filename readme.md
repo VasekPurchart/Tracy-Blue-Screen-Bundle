@@ -49,31 +49,32 @@ Configuration
 Configuration structure with listed default values:
 
 ```yaml
+# app/config/config.yml
 tracy_blue_screen:
     controller:
         # Enable debug screen for controllers.
         # Enabled by default only in dev environment with debug mode on.
-        enabled:              ~
+        enabled: ~
         # Priority with which the listener will be registered.
-        listener_priority:    0
+        listener_priority: 0
 
     console:
         # Enable debug screen for console.
         # Enabled by default only in dev environment with debug mode on.
-        enabled:              ~
+        enabled: ~
 
         # Directory, where BlueScreens for console will be stored.
         # If you are already using Tracy for logging, set this to the same.
         # This will be only used, if given Tracy\Logger instance does not have a directory set.
-        log_directory:        '%kernel.logs_dir%'
+        log_directory: '%kernel.logs_dir%'
 
         # Configure this to open generated BlueScreen in your browser.
         # Configuration option may be for example 'google-chrome'
         # or 'firefox'and it will be invoked as a shell command.
-        browser:              null
+        browser: null
 
         # Priority with which the listener will be registered.
-        listener_priority:    0
+        listener_priority: 0
 ```
 
 You can also override services used internally, for example if you need to specify options for the BlueScreen instance, you can provide custom instance with an [alias](http://symfony.com/doc/current/components/dependency_injection/advanced.html#aliasing):
