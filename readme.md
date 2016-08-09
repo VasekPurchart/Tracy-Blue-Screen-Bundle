@@ -41,7 +41,7 @@ parameters:
     debug.error_handler.throw_at: -1
 ```
 
-This bundle does not provide a dedicated logging functionality. If you want to use Tracy for logging e.g. in production use the [monolog-extensions-bundle](https://github.com/pavelkucera/monolog-extensions-bundle/), which provides a Tracy Monolog handler.
+This bundle does not provide a dedicated logging functionality. If you want to use Tracy for logging e.g. in production use the [monolog-tracy-bundle](https://github.com/nella/monolog-tracy-bundle), which provides a Tracy Monolog handler.
 
 Configuration
 -------------
