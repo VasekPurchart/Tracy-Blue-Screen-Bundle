@@ -5,7 +5,7 @@ services:
         class: Tracy\BlueScreen
         factory: [VasekPurchart\TracyBlueScreenBundle\BlueScreen\BlueScreenFactory, create]
         arguments:
-            - %vasek_purchart.tracy_blue_screen.blue_screen.collapse_paths%
+            - '%vasek_purchart.tracy_blue_screen.blue_screen.collapse_paths%'
         public: false
 
     vasek_purchart.tracy_blue_screen.tracy.logger: '@vasek_purchart.tracy_blue_screen.tracy.logger.default'
