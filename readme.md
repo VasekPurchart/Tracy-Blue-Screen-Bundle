@@ -105,7 +105,7 @@ Installation
 Install package [`vasek-purchart/tracy-blue-screen-bundle`](https://packagist.org/packages/vasek-purchart/tracy-blue-screen-bundle) with [Composer](https://getcomposer.org/):
 
 ```bash
-composer require vasek-purchart/tracy-blue-screen-bundle
+composer require-dev vasek-purchart/tracy-blue-screen-bundle
 ```
 
 Register the bundle in your application kernel:
