@@ -3,4 +3,7 @@
 	<rule ref="../vendor/consistence/coding-standard/Consistence/ruleset.xml">
 		<exclude name="PEAR.WhiteSpace.ObjectOperatorIndent.Incorrect"/><!-- structuring Symfony configuration tree needs indentation -->
 	</rule>
+	<rule ref="Squiz.Commenting.FunctionComment.WrongStyle">
+		<exclude-pattern>src/BlueScreen/ConsoleBlueScreenExceptionListener.php</exclude-pattern>
+	</rule>
 </ruleset>

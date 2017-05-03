@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace VasekPurchart\TracyBlueScreenBundle\DependencyInjection;
 
 use VasekPurchart\TracyBlueScreenBundle\BlueScreen\ConsoleBlueScreenExceptionListener;
@@ -20,7 +22,7 @@ class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInj
 	/**
 	 * @return \Symfony\Component\DependencyInjection\Extension\ExtensionInterface[]
 	 */
-	protected function getContainerExtensions()
+	protected function getContainerExtensions(): array
 	{
 		return [
 			new TracyBlueScreenExtension(),

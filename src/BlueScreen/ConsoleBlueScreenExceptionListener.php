@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace VasekPurchart\TracyBlueScreenBundle\BlueScreen;
 
 use Symfony\Component\Console\Event\ConsoleExceptionEvent;
@@ -76,11 +78,7 @@ class ConsoleBlueScreenExceptionListener
 	}
 	// @codeCoverageIgnoreEnd
 
-	/**
-	 * @param \Symfony\Component\Console\Output\OutputInterface $output
-	 * @param string $message
-	 */
-	private function printErrorMessage(OutputInterface $output, $message)
+	private function printErrorMessage(OutputInterface $output, string $message)
 	{
 		$message = sprintf('<error>%s</error>', $message);
 		if ($output instanceof ConsoleOutputInterface) {
@@ -96,7 +94,7 @@ class ConsoleBlueScreenExceptionListener
 	 * @param string $browser
 	 * @param string $file
 	 */
-	private function openBrowser($browser, $file)
+	private function openBrowser(string $browser, string $file)
 	{
 		static $showed = false;
 		if ($showed) {

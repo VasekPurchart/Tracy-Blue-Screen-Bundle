@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace VasekPurchart\TracyBlueScreenBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -33,17 +35,11 @@ class Configuration implements \Symfony\Component\Config\Definition\Configuratio
 	/** @var string */
 	private $kernelCacheDir;
 
-	/**
-	 * @param string $rootNode
-	 * @param string $kernelRootDir
-	 * @param string $kernelLogsDir
-	 * @param string $kernelCacheDir
-	 */
 	public function __construct(
-		$rootNode,
-		$kernelRootDir,
-		$kernelLogsDir,
-		$kernelCacheDir
+		string $rootNode,
+		string $kernelRootDir,
+		string $kernelLogsDir,
+		string $kernelCacheDir
 	)
 	{
 		$this->rootNode = $rootNode;
@@ -52,10 +48,7 @@ class Configuration implements \Symfony\Component\Config\Definition\Configuratio
 		$this->kernelCacheDir = $kernelCacheDir;
 	}
 
-	/**
-	 * @return \Symfony\Component\Config\Definition\Builder\TreeBuilder
-	 */
-	public function getConfigTreeBuilder()
+	public function getConfigTreeBuilder(): TreeBuilder
 	{
 		$treeBuilder = new TreeBuilder();
 		$rootNode = $treeBuilder->root($this->rootNode);

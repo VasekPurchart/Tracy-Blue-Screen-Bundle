@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace VasekPurchart\TracyBlueScreenBundle\BlueScreen;
 
 use org\bovigo\vfs\vfsStream;

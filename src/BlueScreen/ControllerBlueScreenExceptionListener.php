@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace VasekPurchart\TracyBlueScreenBundle\BlueScreen;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -13,9 +15,6 @@ class ControllerBlueScreenExceptionListener
 	/** @var \Tracy\BlueScreen */
 	private $blueScreen;
 
-	/**
-	 * @param \Tracy\BlueScreen $blueScreen
-	 */
 	public function __construct(
 		BlueScreen $blueScreen
 	)
@@ -35,7 +34,7 @@ class ControllerBlueScreenExceptionListener
 		$request->attributes->set('_format', 'html');
 	}
 
-	private function renderBlueScreen(\Exception $exception)
+	private function renderBlueScreen(\Throwable $exception)
 	{
 		if (!headers_sent()) {
 			// @codeCoverageIgnoreStart

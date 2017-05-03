@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace VasekPurchart\TracyBlueScreenBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
@@ -69,7 +71,7 @@ class TracyBlueScreenExtension extends \Symfony\Component\HttpKernel\DependencyI
 	 * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
 	 * @return \VasekPurchart\TracyBlueScreenBundle\DependencyInjection\Configuration
 	 */
-	public function getConfiguration(array $config, ContainerBuilder $container)
+	public function getConfiguration(array $config, ContainerBuilder $container): Configuration
 	{
 		return new Configuration(
 			$this->getAlias(),
@@ -85,7 +87,7 @@ class TracyBlueScreenExtension extends \Symfony\Component\HttpKernel\DependencyI
 	 * @param boolean $debug
 	 * @return boolean
 	 */
-	private function isEnabled($configOption, $environment, $debug)
+	private function isEnabled($configOption, string $environment, bool $debug): bool
 	{
 		if ($configOption === null) {
 			return $environment === 'dev' && $debug === true;

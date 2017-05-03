@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace VasekPurchart\TracyBlueScreenBundle\DependencyInjection;
 
 use Tracy\BlueScreen;
@@ -20,7 +22,7 @@ class TracyBlueScreenExtensionTest extends \Matthias\SymfonyDependencyInjectionT
 	/**
 	 * @return \Symfony\Component\DependencyInjection\Extension\ExtensionInterface[]
 	 */
-	protected function getContainerExtensions()
+	protected function getContainerExtensions(): array
 	{
 		return [
 			new TracyBlueScreenExtension(),
@@ -96,7 +98,7 @@ class TracyBlueScreenExtensionTest extends \Matthias\SymfonyDependencyInjectionT
 	 * @param string $string
 	 * @param string[] $array
 	 */
-	private function assertArrayContainsStringPart($string, array $array)
+	private function assertArrayContainsStringPart(string $string, array $array)
 	{
 		$found = false;
 		foreach ($array as $item) {
