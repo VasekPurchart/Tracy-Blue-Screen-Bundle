@@ -2,8 +2,23 @@
 <ruleset name="TracyBlueScreenBundle">
 	<rule ref="../vendor/consistence/coding-standard/Consistence/ruleset.xml">
 		<exclude name="PEAR.WhiteSpace.ObjectOperatorIndent.Incorrect"/><!-- structuring Symfony configuration tree needs indentation -->
+		<exclude name="SlevomatCodingStandard.Classes.ClassConstantVisibility"/><!-- requires 7.1+ -->
+		<exclude name="SlevomatCodingStandard.TypeHints.NullableTypeForNullDefaultValue"/><!-- requires PHP 7.1+ -->
 	</rule>
 	<rule ref="Squiz.Commenting.FunctionComment.WrongStyle">
 		<exclude-pattern>src/BlueScreen/ConsoleBlueScreenExceptionListener.php</exclude-pattern>
+	</rule>
+	<rule ref="SlevomatCodingStandard.Files.TypeNameMatchesFileName">
+		<properties>
+			<property name="rootNamespaces" type="array" value="
+				src => VasekPurchart\TracyBlueScreenBundle,
+				tests => VasekPurchart\TracyBlueScreenBundle,
+			"/>
+		</properties>
+		<exclude-pattern>*/data/*.php</exclude-pattern>
+		<exclude-pattern>*/exceptions/*Exception.php</exclude-pattern>
+	</rule>
+	<rule ref="SlevomatCodingStandard.Classes.UnusedPrivateElements">
+		<exclude-pattern>*/data/*.php</exclude-pattern>
 	</rule>
 </ruleset>

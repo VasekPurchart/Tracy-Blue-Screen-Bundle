@@ -5,7 +5,6 @@ declare(strict_types = 1);
 namespace VasekPurchart\TracyBlueScreenBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
-
 use Tracy\Logger as TracyLogger;
 
 class Configuration implements \Symfony\Component\Config\Definition\ConfigurationInterface

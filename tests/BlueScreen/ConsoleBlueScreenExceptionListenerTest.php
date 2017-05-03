@@ -4,16 +4,14 @@ declare(strict_types = 1);
 
 namespace VasekPurchart\TracyBlueScreenBundle\BlueScreen;
 
-use org\bovigo\vfs\vfsStream;
-
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Event\ConsoleExceptionEvent;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-
 use Tracy\BlueScreen;
 use Tracy\Logger as TracyLogger;
+use org\bovigo\vfs\vfsStream;
 
 class ConsoleBlueScreenExceptionListenerTest extends \PHPUnit\Framework\TestCase
 {

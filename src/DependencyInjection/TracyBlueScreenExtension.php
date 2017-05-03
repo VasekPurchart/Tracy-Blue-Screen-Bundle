@@ -82,10 +82,10 @@ class TracyBlueScreenExtension extends \Symfony\Component\HttpKernel\DependencyI
 	}
 
 	/**
-	 * @param boolean|null $configOption
+	 * @param bool|null $configOption
 	 * @param string $environment
-	 * @param boolean $debug
-	 * @return boolean
+	 * @param bool $debug
+	 * @return bool
 	 */
 	private function isEnabled($configOption, string $environment, bool $debug): bool
 	{

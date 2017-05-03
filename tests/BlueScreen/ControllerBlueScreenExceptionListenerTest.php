@@ -7,7 +7,6 @@ namespace VasekPurchart\TracyBlueScreenBundle\BlueScreen;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-
 use Tracy\BlueScreen;
 
 class ControllerBlueScreenExceptionListenerTest extends \PHPUnit\Framework\TestCase

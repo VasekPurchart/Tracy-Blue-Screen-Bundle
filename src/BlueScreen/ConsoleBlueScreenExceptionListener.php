@@ -7,7 +7,6 @@ namespace VasekPurchart\TracyBlueScreenBundle\BlueScreen;
 use Symfony\Component\Console\Event\ConsoleExceptionEvent;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-
 use Tracy\BlueScreen;
 use Tracy\Logger as TracyLogger;
 
