@@ -1,6 +1,6 @@
 services:
-    vasek_purchart.tracy_blue_screen.blue_screen.console_blue_screen_exception_listener:
-        class: VasekPurchart\TracyBlueScreenBundle\BlueScreen\ConsoleBlueScreenExceptionListener
+    vasek_purchart.tracy_blue_screen.blue_screen.console_blue_screen_error_listener:
+        class: VasekPurchart\TracyBlueScreenBundle\BlueScreen\ConsoleBlueScreenErrorListener
         arguments:
             - '@vasek_purchart.tracy_blue_screen.tracy.logger'
             - '@vasek_purchart.tracy_blue_screen.tracy.blue_screen'
@@ -9,5 +9,5 @@ services:
         tags:
             -
                 name: kernel.event_listener
-                event: console.exception
+                event: console.error
                 priority: '%vasek_purchart.tracy_blue_screen.console.listener_priority%'

@@ -31,7 +31,7 @@ If you need to change the default position of this listener (see order in `app/c
 
 This bundle expects that you are using the default Symfony profiler screen rendered via the [TwigBundle](http://symfony.com/doc/current/reference/configuration/twig.html), which must be registered.
 
-Console integration also works out of the box, if you do not have an `console.exception` listener that would prevent execution of this one. Again, this can be tweaked using the respective `listener_priority` option.
+Console integration also works out of the box, if you do not have an `console.error` listener that would prevent execution of this one. Again, this can be tweaked using the respective `listener_priority` option.
 
 Configure the `browser` option to open the exceptions directly in your browser, configured binary must be executable with [`exec()`](http://php.net/manual/en/function.exec.php).
 

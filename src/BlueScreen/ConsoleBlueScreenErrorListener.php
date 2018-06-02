@@ -4,13 +4,13 @@ declare(strict_types = 1);
 
 namespace VasekPurchart\TracyBlueScreenBundle\BlueScreen;
 
-use Symfony\Component\Console\Event\ConsoleExceptionEvent;
+use Symfony\Component\Console\Event\ConsoleErrorEvent;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Tracy\BlueScreen;
 use Tracy\Logger as TracyLogger;
 
-class ConsoleBlueScreenExceptionListener
+class ConsoleBlueScreenErrorListener
 {
 
 	/** @var \Tracy\Logger */
@@ -38,7 +38,7 @@ class ConsoleBlueScreenExceptionListener
 		$this->browser = $browser;
 	}
 
-	public function onConsoleException(ConsoleExceptionEvent $event): void
+	public function onConsoleError(ConsoleErrorEvent $event): void
 	{
 		if ($this->tracyLogger->directory === null) {
 			$this->tracyLogger->directory = $this->logDirectory;
@@ -53,10 +53,10 @@ class ConsoleBlueScreenExceptionListener
 				'Log directory must be a writable directory, %s [%s] given',
 				$this->tracyLogger->directory,
 				gettype($this->tracyLogger->directory)
-			), 0, $event->getException());
+			), 0, $event->getError());
 		}
 
-		$exception = $event->getException();
+		$exception = $event->getError();
 		$exceptionFile = $this->tracyLogger->getExceptionFile($exception);
 		$this->blueScreen->renderToFile($exception, $exceptionFile);
 

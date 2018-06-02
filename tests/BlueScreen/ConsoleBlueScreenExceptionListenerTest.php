@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace VasekPurchart\TracyBlueScreenBundle\BlueScreen;
 
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Event\ConsoleExceptionEvent;
+use Symfony\Component\Console\Event\ConsoleErrorEvent;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -31,7 +31,7 @@ class ConsoleBlueScreenExceptionListenerTest extends \PHPUnit\Framework\TestCase
 			->with($this->stringContains('saved in file'));
 		$exception = new \Exception('Foobar!');
 
-		$event = new ConsoleExceptionEvent($command, $input, $output, $exception, 1);
+		$event = new ConsoleErrorEvent($input, $output, $exception, $command);
 
 		$logger = $this->createMock(TracyLogger::class);
 		$logger
@@ -46,13 +46,13 @@ class ConsoleBlueScreenExceptionListenerTest extends \PHPUnit\Framework\TestCase
 			->method('renderToFile')
 			->with($exception, $file);
 
-		$listener = new ConsoleBlueScreenExceptionListener(
+		$listener = new ConsoleBlueScreenErrorListener(
 			$logger,
 			$blueScreen,
 			$directory,
 			null
 		);
-		$listener->onConsoleException($event);
+		$listener->onConsoleError($event);
 	}
 
 	public function testUsesErrorOutputIfPossible(): void
@@ -76,7 +76,7 @@ class ConsoleBlueScreenExceptionListenerTest extends \PHPUnit\Framework\TestCase
 
 		$exception = new \Exception('Foobar!');
 
-		$event = new ConsoleExceptionEvent($command, $input, $output, $exception, 1);
+		$event = new ConsoleErrorEvent($input, $output, $exception, $command);
 
 		$logger = $this->createMock(TracyLogger::class);
 		$logger
@@ -91,13 +91,13 @@ class ConsoleBlueScreenExceptionListenerTest extends \PHPUnit\Framework\TestCase
 			->method('renderToFile')
 			->with($exception, $file);
 
-		$listener = new ConsoleBlueScreenExceptionListener(
+		$listener = new ConsoleBlueScreenErrorListener(
 			$logger,
 			$blueScreen,
 			$directory,
 			null
 		);
-		$listener->onConsoleException($event);
+		$listener->onConsoleError($event);
 	}
 
 	public function testMissingLogDir(): void
@@ -107,12 +107,12 @@ class ConsoleBlueScreenExceptionListenerTest extends \PHPUnit\Framework\TestCase
 		$output = $this->createMock(OutputInterface::class);
 		$exception = new \Exception('Foobar!');
 
-		$event = new ConsoleExceptionEvent($command, $input, $output, $exception, 1);
+		$event = new ConsoleErrorEvent($input, $output, $exception, $command);
 
 		$logger = $this->createMock(TracyLogger::class);
 		$blueScreen = $this->createMock(BlueScreen::class);
 
-		$listener = new ConsoleBlueScreenExceptionListener(
+		$listener = new ConsoleBlueScreenErrorListener(
 			$logger,
 			$blueScreen,
 			null,
@@ -121,7 +121,7 @@ class ConsoleBlueScreenExceptionListenerTest extends \PHPUnit\Framework\TestCase
 
 		$this->expectException(\InvalidArgumentException::class);
 
-		$listener->onConsoleException($event);
+		$listener->onConsoleError($event);
 	}
 
 }
