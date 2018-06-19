@@ -9,7 +9,7 @@ use VasekPurchart\TracyBlueScreenBundle\BlueScreen\ControllerBlueScreenException
 class TracyBlueScreenExtensionControllerTest extends \Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase
 {
 
-	public function setUp()
+	public function setUp(): void
 	{
 		parent::setUp();
 		$this->setParameter('kernel.root_dir', __DIR__);
@@ -29,7 +29,7 @@ class TracyBlueScreenExtensionControllerTest extends \Matthias\SymfonyDependency
 		];
 	}
 
-	public function testEnabledByDefault()
+	public function testEnabledByDefault(): void
 	{
 		$this->load();
 
@@ -42,7 +42,7 @@ class TracyBlueScreenExtensionControllerTest extends \Matthias\SymfonyDependency
 		$this->compile();
 	}
 
-	public function testDisabled()
+	public function testDisabled(): void
 	{
 		$this->load([
 			'controller' => [
@@ -55,7 +55,7 @@ class TracyBlueScreenExtensionControllerTest extends \Matthias\SymfonyDependency
 		$this->compile();
 	}
 
-	public function testEnabled()
+	public function testEnabled(): void
 	{
 		$this->load([
 			'controller' => [
@@ -72,7 +72,7 @@ class TracyBlueScreenExtensionControllerTest extends \Matthias\SymfonyDependency
 		$this->compile();
 	}
 
-	public function testConfigureListenerPriority()
+	public function testConfigureListenerPriority(): void
 	{
 		$this->load([
 			'controller' => [

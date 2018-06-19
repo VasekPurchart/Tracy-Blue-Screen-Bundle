@@ -9,7 +9,7 @@ use VasekPurchart\TracyBlueScreenBundle\BlueScreen\ConsoleBlueScreenExceptionLis
 class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase
 {
 
-	public function setUp()
+	public function setUp(): void
 	{
 		parent::setUp();
 		$this->setParameter('kernel.root_dir', __DIR__);
@@ -29,7 +29,7 @@ class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInj
 		];
 	}
 
-	public function testEnabledByDefault()
+	public function testEnabledByDefault(): void
 	{
 		$this->load();
 
@@ -42,7 +42,7 @@ class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInj
 		$this->compile();
 	}
 
-	public function testDisabled()
+	public function testDisabled(): void
 	{
 		$this->load([
 			'console' => [
@@ -55,7 +55,7 @@ class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInj
 		$this->compile();
 	}
 
-	public function testEnabled()
+	public function testEnabled(): void
 	{
 		$this->load([
 			'console' => [
@@ -72,7 +72,7 @@ class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInj
 		$this->compile();
 	}
 
-	public function testDefaultLogsDirIsKernelLogsDir()
+	public function testDefaultLogsDirIsKernelLogsDir(): void
 	{
 		$this->load();
 
@@ -81,7 +81,7 @@ class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInj
 		$this->compile();
 	}
 
-	public function testCustomLogsDir()
+	public function testCustomLogsDir(): void
 	{
 		$this->load([
 			'console' => [
@@ -94,7 +94,7 @@ class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInj
 		$this->compile();
 	}
 
-	public function testDefaultBrowserIsNull()
+	public function testDefaultBrowserIsNull(): void
 	{
 		$this->load();
 
@@ -103,7 +103,7 @@ class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInj
 		$this->compile();
 	}
 
-	public function testCustomBrowser()
+	public function testCustomBrowser(): void
 	{
 		$this->load([
 			'console' => [
@@ -116,7 +116,7 @@ class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInj
 		$this->compile();
 	}
 
-	public function testConfigureListenerPriority()
+	public function testConfigureListenerPriority(): void
 	{
 		$this->load([
 			'console' => [

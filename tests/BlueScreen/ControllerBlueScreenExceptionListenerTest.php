@@ -12,7 +12,7 @@ use Tracy\BlueScreen;
 class ControllerBlueScreenExceptionListenerTest extends \PHPUnit\Framework\TestCase
 {
 
-	public function testRenderTracy()
+	public function testRenderTracy(): void
 	{
 		$kernel = $this->createMock(HttpKernelInterface::class);
 		$request = new Request();

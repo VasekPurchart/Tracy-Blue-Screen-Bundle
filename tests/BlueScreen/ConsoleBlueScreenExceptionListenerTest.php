@@ -16,7 +16,7 @@ use org\bovigo\vfs\vfsStream;
 class ConsoleBlueScreenExceptionListenerTest extends \PHPUnit\Framework\TestCase
 {
 
-	public function testLogTracy()
+	public function testLogTracy(): void
 	{
 		vfsStream::setup('tracy');
 		$directory = vfsStream::url('tracy');
@@ -55,7 +55,7 @@ class ConsoleBlueScreenExceptionListenerTest extends \PHPUnit\Framework\TestCase
 		$listener->onConsoleException($event);
 	}
 
-	public function testUsesErrorOutputIfPossible()
+	public function testUsesErrorOutputIfPossible(): void
 	{
 		vfsStream::setup('tracy');
 		$directory = vfsStream::url('tracy');
@@ -100,7 +100,7 @@ class ConsoleBlueScreenExceptionListenerTest extends \PHPUnit\Framework\TestCase
 		$listener->onConsoleException($event);
 	}
 
-	public function testMissingLogDir()
+	public function testMissingLogDir(): void
 	{
 		$command = $this->createMock(Command::class);
 		$input = $this->createMock(InputInterface::class);

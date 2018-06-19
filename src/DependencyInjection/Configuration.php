@@ -10,17 +10,17 @@ use Tracy\Logger as TracyLogger;
 class Configuration implements \Symfony\Component\Config\Definition\ConfigurationInterface
 {
 
-	const PARAMETER_COLLAPSE_PATHS = 'collapse_paths';
-	const PARAMETER_CONSOLE_BROWSER = 'browser';
-	const PARAMETER_CONSOLE_ENABLED = 'enabled';
-	const PARAMETER_CONSOLE_LISTENER_PRIORITY = 'listener_priority';
-	const PARAMETER_CONSOLE_LOG_DIRECTORY = 'log_directory';
-	const PARAMETER_CONTROLLER_ENABLED = 'enabled';
-	const PARAMETER_CONTROLLER_LISTENER_PRIORITY = 'listener_priority';
+	public const PARAMETER_COLLAPSE_PATHS = 'collapse_paths';
+	public const PARAMETER_CONSOLE_BROWSER = 'browser';
+	public const PARAMETER_CONSOLE_ENABLED = 'enabled';
+	public const PARAMETER_CONSOLE_LISTENER_PRIORITY = 'listener_priority';
+	public const PARAMETER_CONSOLE_LOG_DIRECTORY = 'log_directory';
+	public const PARAMETER_CONTROLLER_ENABLED = 'enabled';
+	public const PARAMETER_CONTROLLER_LISTENER_PRIORITY = 'listener_priority';
 
-	const SECTION_BLUE_SCREEN = 'blue_screen';
-	const SECTION_CONSOLE = 'console';
-	const SECTION_CONTROLLER = 'controller';
+	public const SECTION_BLUE_SCREEN = 'blue_screen';
+	public const SECTION_CONSOLE = 'console';
+	public const SECTION_CONTROLLER = 'controller';
 
 	/** @var string */
 	private $rootNode;

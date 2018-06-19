@@ -25,17 +25,11 @@ class ConsoleBlueScreenExceptionListener
 	/** @var string|null */
 	private $browser;
 
-	/**
-	 * @param \Tracy\Logger $tracyLogger
-	 * @param \Tracy\BlueScreen $blueScreen
-	 * @param string|null $logDirectory
-	 * @param string|null $browser
-	 */
 	public function __construct(
 		TracyLogger $tracyLogger,
 		BlueScreen $blueScreen,
-		$logDirectory,
-		$browser
+		?string $logDirectory,
+		?string $browser
 	)
 	{
 		$this->tracyLogger = $tracyLogger;
@@ -44,7 +38,7 @@ class ConsoleBlueScreenExceptionListener
 		$this->browser = $browser;
 	}
 
-	public function onConsoleException(ConsoleExceptionEvent $event)
+	public function onConsoleException(ConsoleExceptionEvent $event): void
 	{
 		if ($this->tracyLogger->directory === null) {
 			$this->tracyLogger->directory = $this->logDirectory;
@@ -77,7 +71,7 @@ class ConsoleBlueScreenExceptionListener
 	}
 	// @codeCoverageIgnoreEnd
 
-	private function printErrorMessage(OutputInterface $output, string $message)
+	private function printErrorMessage(OutputInterface $output, string $message): void
 	{
 		$message = sprintf('<error>%s</error>', $message);
 		if ($output instanceof ConsoleOutputInterface) {
@@ -93,7 +87,7 @@ class ConsoleBlueScreenExceptionListener
 	 * @param string $browser
 	 * @param string $file
 	 */
-	private function openBrowser(string $browser, string $file)
+	private function openBrowser(string $browser, string $file): void
 	{
 		static $showed = false;
 		if ($showed) {

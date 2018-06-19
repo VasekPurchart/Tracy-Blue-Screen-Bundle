@@ -9,7 +9,7 @@ use Tracy\BlueScreen;
 class TracyBlueScreenExtensionTest extends \Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase
 {
 
-	public function setUp()
+	public function setUp(): void
 	{
 		parent::setUp();
 		$this->setParameter('kernel.root_dir', __DIR__);
@@ -29,7 +29,7 @@ class TracyBlueScreenExtensionTest extends \Matthias\SymfonyDependencyInjectionT
 		];
 	}
 
-	public function testOnlyAddCollapsePaths()
+	public function testOnlyAddCollapsePaths(): void
 	{
 		$this->load();
 
@@ -45,7 +45,7 @@ class TracyBlueScreenExtensionTest extends \Matthias\SymfonyDependencyInjectionT
 		$this->compile();
 	}
 
-	public function testCollapseCacheDirsByDefault()
+	public function testCollapseCacheDirsByDefault(): void
 	{
 		$this->load();
 
@@ -58,7 +58,7 @@ class TracyBlueScreenExtensionTest extends \Matthias\SymfonyDependencyInjectionT
 		$this->compile();
 	}
 
-	public function testSetCollapseDirs()
+	public function testSetCollapseDirs(): void
 	{
 		$paths = [
 			__DIR__ . '/foobar',
@@ -78,7 +78,7 @@ class TracyBlueScreenExtensionTest extends \Matthias\SymfonyDependencyInjectionT
 		$this->compile();
 	}
 
-	public function testEmptyCollapseDirs()
+	public function testEmptyCollapseDirs(): void
 	{
 		$this->load([
 			'blue_screen' => [
@@ -98,7 +98,7 @@ class TracyBlueScreenExtensionTest extends \Matthias\SymfonyDependencyInjectionT
 	 * @param string $string
 	 * @param string[] $array
 	 */
-	private function assertArrayContainsStringPart(string $string, array $array)
+	private function assertArrayContainsStringPart(string $string, array $array): void
 	{
 		$found = false;
 		foreach ($array as $item) {

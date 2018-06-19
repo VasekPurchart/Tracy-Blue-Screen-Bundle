@@ -21,19 +21,19 @@ class ControllerBlueScreenExceptionListener
 		$this->blueScreen = $blueScreen;
 	}
 
-	public function onKernelException(GetResponseForExceptionEvent $event)
+	public function onKernelException(GetResponseForExceptionEvent $event): void
 	{
 		$this->forceExceptionControllerHtml($event->getRequest());
 		$this->renderBlueScreen($event->getException());
 	}
 
-	private function forceExceptionControllerHtml(Request $request)
+	private function forceExceptionControllerHtml(Request $request): void
 	{
 		$request->setRequestFormat('html');
 		$request->attributes->set('_format', 'html');
 	}
 
-	private function renderBlueScreen(\Throwable $exception)
+	private function renderBlueScreen(\Throwable $exception): void
 	{
 		if (!headers_sent()) {
 			// @codeCoverageIgnoreStart

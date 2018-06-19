@@ -11,17 +11,17 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 class TracyBlueScreenExtension extends \Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension
 {
 
-	const CONTAINER_PARAMETER_BLUE_SCREEN_COLLAPSE_PATHS = 'vasek_purchart.tracy_blue_screen.blue_screen.collapse_paths';
-	const CONTAINER_PARAMETER_CONSOLE_BROWSER = 'vasek_purchart.tracy_blue_screen.console.browser';
-	const CONTAINER_PARAMETER_CONSOLE_LISTENER_PRIORITY = 'vasek_purchart.tracy_blue_screen.console.listener_priority';
-	const CONTAINER_PARAMETER_CONSOLE_LOG_DIRECTORY = 'vasek_purchart.tracy_blue_screen.console.log_directory';
-	const CONTAINER_PARAMETER_CONTROLLER_LISTENER_PRIORITY = 'vasek_purchart.tracy_blue_screen.controller.listener_priority';
+	public const CONTAINER_PARAMETER_BLUE_SCREEN_COLLAPSE_PATHS = 'vasek_purchart.tracy_blue_screen.blue_screen.collapse_paths';
+	public const CONTAINER_PARAMETER_CONSOLE_BROWSER = 'vasek_purchart.tracy_blue_screen.console.browser';
+	public const CONTAINER_PARAMETER_CONSOLE_LISTENER_PRIORITY = 'vasek_purchart.tracy_blue_screen.console.listener_priority';
+	public const CONTAINER_PARAMETER_CONSOLE_LOG_DIRECTORY = 'vasek_purchart.tracy_blue_screen.console.log_directory';
+	public const CONTAINER_PARAMETER_CONTROLLER_LISTENER_PRIORITY = 'vasek_purchart.tracy_blue_screen.controller.listener_priority';
 
 	/**
 	 * @param mixed[] $mergedConfig
 	 * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
 	 */
-	public function loadInternal(array $mergedConfig, ContainerBuilder $container)
+	public function loadInternal(array $mergedConfig, ContainerBuilder $container): void
 	{
 		$container->setParameter(
 			self::CONTAINER_PARAMETER_BLUE_SCREEN_COLLAPSE_PATHS,
@@ -81,13 +81,7 @@ class TracyBlueScreenExtension extends \Symfony\Component\HttpKernel\DependencyI
 		);
 	}
 
-	/**
-	 * @param bool|null $configOption
-	 * @param string $environment
-	 * @param bool $debug
-	 * @return bool
-	 */
-	private function isEnabled($configOption, string $environment, bool $debug): bool
+	private function isEnabled(?bool $configOption, string $environment, bool $debug): bool
 	{
 		if ($configOption === null) {
 			return $environment === 'dev' && $debug === true;
