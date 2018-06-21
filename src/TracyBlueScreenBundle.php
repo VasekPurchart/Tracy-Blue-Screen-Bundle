@@ -7,9 +7,4 @@ namespace VasekPurchart\TracyBlueScreenBundle;
 class TracyBlueScreenBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 {
 
-	public function getParent(): string
-	{
-		return 'TwigBundle';
-	}
-
 }

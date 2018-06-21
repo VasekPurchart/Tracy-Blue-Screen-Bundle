@@ -27,7 +27,7 @@ Usage
 
 If you do not have any custom `kernel.exception` listeners this works out of the box. However if you have any, you have to ensure that they do not return any response, because that prevents the profiler from showing up (the same applies for the default Symfony exception screen).
 
-If you need to change the default position of this listener (see order in `app/console debug:event-dispatcher`), use the configuration option `listener_priority`.
+If you need to change the default position of this listener (see order in `bin/console debug:event-dispatcher`), use the configuration option `listener_priority`.
 
 This bundle expects that you are using the default Symfony profiler screen rendered via the [TwigBundle](http://symfony.com/doc/current/reference/configuration/twig.html), which must be registered.
 
@@ -49,7 +49,7 @@ Configuration
 Configuration structure with listed default values:
 
 ```yaml
-# app/config/config.yml
+# config/packages/tracy_blue_screen.yaml
 tracy_blue_screen:
     controller:
         # Enable debug screen for controllers.
@@ -80,8 +80,8 @@ tracy_blue_screen:
         # Add paths which should be collapsed (for external/compiled code) so that actual error is expanded.
         collapse_paths:
             # Defaults:
-            - %kernel.root_dir%/bootstrap.php.cache
-            - %kernel.cache_dir%
+            - '%kernel.root_dir%/bootstrap.php.cache'
+            - '%kernel.cache_dir%'
             # plus paths set in BlueScreen instance used (/vendor)
 
 ```
@@ -91,12 +91,12 @@ You can also override services used internally, for example if you need to speci
 ```yaml
 services:
     my_blue_screen:
-        class: Tracy\BlueScreen
+        class: 'Tracy\BlueScreen'
         properties:
             info:
                 - 'environment: %kernel.environment%'
 
-    vasek_purchart.tracy_blue_screen.tracy.blue_screen: @my_blue_screen
+    vasek_purchart.tracy_blue_screen.tracy.blue_screen: '@my_blue_screen'
 ```
 
 Installation
@@ -108,15 +108,11 @@ Install package [`vasek-purchart/tracy-blue-screen-bundle`](https://packagist.or
 composer require vasek-purchart/tracy-blue-screen-bundle
 ```
 
-Register the bundle in your application kernel:
+Register the bundle in your application:
 ```php
-// app/AppKernel.php
-public function registerBundles()
-{
-	return array(
-		// ...
-		new VasekPurchart\TracyBlueScreenBundle\TracyBlueScreenBundle(),
-	);
-}
+// config/bundles.php
+return [
+	// ...
+	VasekPurchart\TracyBlueScreenBundle\TracyBlueScreenBundle::class => ['all' => true],
+];
 ```
-

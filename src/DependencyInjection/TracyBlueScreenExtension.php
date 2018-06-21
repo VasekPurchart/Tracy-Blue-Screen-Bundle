@@ -4,11 +4,15 @@ declare(strict_types = 1);
 
 namespace VasekPurchart\TracyBlueScreenBundle\DependencyInjection;
 
+use ReflectionClass;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use VasekPurchart\TracyBlueScreenBundle\TracyBlueScreenBundle;
 
-class TracyBlueScreenExtension extends \Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension
+class TracyBlueScreenExtension
+	extends \Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension
+	implements \Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface
 {
 
 	public const CONTAINER_PARAMETER_BLUE_SCREEN_COLLAPSE_PATHS = 'vasek_purchart.tracy_blue_screen.blue_screen.collapse_paths';
@@ -16,6 +20,30 @@ class TracyBlueScreenExtension extends \Symfony\Component\HttpKernel\DependencyI
 	public const CONTAINER_PARAMETER_CONSOLE_LISTENER_PRIORITY = 'vasek_purchart.tracy_blue_screen.console.listener_priority';
 	public const CONTAINER_PARAMETER_CONSOLE_LOG_DIRECTORY = 'vasek_purchart.tracy_blue_screen.console.log_directory';
 	public const CONTAINER_PARAMETER_CONTROLLER_LISTENER_PRIORITY = 'vasek_purchart.tracy_blue_screen.controller.listener_priority';
+
+	private const TWIG_BUNDLE_ALIAS = 'twig';
+	private const TWIG_TEMPLATES_NAMESPACE = 'Twig';
+
+	public function prepend(ContainerBuilder $container): void
+	{
+		if (!$container->hasExtension(self::TWIG_BUNDLE_ALIAS)) {
+			throw new \VasekPurchart\TracyBlueScreenBundle\DependencyInjection\TwigBundleRequiredException();
+		}
+
+		$container->loadFromExtension(self::TWIG_BUNDLE_ALIAS, [
+			'paths' => [
+				$this->getTemplatesDirectory() => self::TWIG_TEMPLATES_NAMESPACE,
+			],
+		]);
+	}
+
+	private function getTemplatesDirectory(): string
+	{
+		$bundleClassReflection = new ReflectionClass(TracyBlueScreenBundle::class);
+		$srcDirectoryPath = dirname($bundleClassReflection->getFileName());
+
+		return $srcDirectoryPath . '/Resources/views';
+	}
 
 	/**
 	 * @param mixed[] $mergedConfig
