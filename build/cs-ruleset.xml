@@ -8,10 +8,10 @@
 	</rule>
 	<rule ref="SlevomatCodingStandard.Files.TypeNameMatchesFileName">
 		<properties>
-			<property name="rootNamespaces" type="array" value="
-				src => VasekPurchart\TracyBlueScreenBundle,
-				tests => VasekPurchart\TracyBlueScreenBundle,
-			"/>
+			<property name="rootNamespaces" type="array">
+				<element key="src" value="VasekPurchart\TracyBlueScreenBundle"/>
+				<element key="tests" value="VasekPurchart\TracyBlueScreenBundle"/>
+			</property>
 		</properties>
 		<exclude-pattern>*/data/*.php</exclude-pattern>
 		<exclude-pattern>*/exceptions/*Exception.php</exclude-pattern>
