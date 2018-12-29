@@ -16,11 +16,6 @@
 		<exclude-pattern>*/data/*.php</exclude-pattern>
 		<exclude-pattern>*/exceptions/*Exception.php</exclude-pattern>
 	</rule>
-	<rule ref="SlevomatCodingStandard.TypeHints.TypeHintDeclaration">
-		<properties>
-			<property name="enableObjectTypeHint" value="false"/><!-- requires 7.2+ -->
-		</properties>
-	</rule>
 	<rule ref="SlevomatCodingStandard.Classes.UnusedPrivateElements">
 		<exclude-pattern>*/data/*.php</exclude-pattern>
 	</rule>
