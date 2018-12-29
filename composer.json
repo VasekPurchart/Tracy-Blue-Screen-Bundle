@@ -32,7 +32,8 @@
 	"autoload": {
 		"psr-4": {
 			"VasekPurchart\\TracyBlueScreenBundle\\": "src"
-		}
+		},
+		"classmap": [ "src" ]
 	},
 	"autoload-dev": {
 		"psr-4": {
