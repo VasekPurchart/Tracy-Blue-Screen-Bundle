@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace VasekPurchart\TracyBlueScreenBundle\BlueScreen;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Tracy\BlueScreen;
 
 class ControllerBlueScreenExceptionListener
@@ -21,10 +21,10 @@ class ControllerBlueScreenExceptionListener
 		$this->blueScreen = $blueScreen;
 	}
 
-	public function onKernelException(GetResponseForExceptionEvent $event): void
+	public function onKernelException(ExceptionEvent $event): void
 	{
 		$this->forceExceptionControllerHtml($event->getRequest());
-		$this->renderBlueScreen($event->getException());
+		$this->renderBlueScreen($event->getThrowable());
 	}
 
 	private function forceExceptionControllerHtml(Request $request): void

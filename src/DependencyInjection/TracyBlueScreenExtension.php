@@ -103,7 +103,7 @@ class TracyBlueScreenExtension
 	{
 		return new Configuration(
 			$this->getAlias(),
-			$container->getParameter('kernel.root_dir'),
+			$container->getParameter('kernel.project_dir'),
 			$container->getParameter('kernel.logs_dir'),
 			$container->getParameter('kernel.cache_dir')
 		);
