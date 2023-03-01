@@ -15,6 +15,7 @@
 		"symfony/config": "~4.0",
 		"symfony/console": "~4.0",
 		"symfony/dependency-injection": "~4.0",
+		"symfony/http-foundation": "~4.0",
 		"symfony/http-kernel": "~4.0",
 		"symfony/twig-bundle": "~4.0",
 		"symfony/yaml": "~4.0",
@@ -22,6 +23,7 @@
 	},
 	"require-dev": {
 		"consistence/coding-standard": "3.10.1",
+		"maglnet/composer-require-checker": "2.0",
 		"matthiasnoback/symfony-dependency-injection-test": "4.3",
 		"mikey179/vfsstream": "1.6.10",
 		"php-parallel-lint/php-console-highlighter": "1.0",
