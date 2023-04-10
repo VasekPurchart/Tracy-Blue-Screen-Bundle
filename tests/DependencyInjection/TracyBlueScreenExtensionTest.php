@@ -67,8 +67,8 @@ class TracyBlueScreenExtensionTest extends \Matthias\SymfonyDependencyInjectionT
 	{
 		$this->loadExtensions();
 
-		$this->assertContainerBuilderHasParameter('vasek_purchart.tracy_blue_screen.blue_screen.collapse_paths');
-		$collapsePaths = $this->container->getParameter('vasek_purchart.tracy_blue_screen.blue_screen.collapse_paths');
+		$this->assertContainerBuilderHasParameter(TracyBlueScreenExtension::CONTAINER_PARAMETER_BLUE_SCREEN_COLLAPSE_PATHS);
+		$collapsePaths = $this->container->getParameter(TracyBlueScreenExtension::CONTAINER_PARAMETER_BLUE_SCREEN_COLLAPSE_PATHS);
 
 		$this->assertArrayContainsStringPart('/bootstrap.php.cache', $collapsePaths);
 		$this->assertArrayContainsStringPart('/tests-cache-dir', $collapsePaths);
@@ -88,8 +88,8 @@ class TracyBlueScreenExtensionTest extends \Matthias\SymfonyDependencyInjectionT
 			],
 		]);
 
-		$this->assertContainerBuilderHasParameter('vasek_purchart.tracy_blue_screen.blue_screen.collapse_paths');
-		$collapsePaths = $this->container->getParameter('vasek_purchart.tracy_blue_screen.blue_screen.collapse_paths');
+		$this->assertContainerBuilderHasParameter(TracyBlueScreenExtension::CONTAINER_PARAMETER_BLUE_SCREEN_COLLAPSE_PATHS);
+		$collapsePaths = $this->container->getParameter(TracyBlueScreenExtension::CONTAINER_PARAMETER_BLUE_SCREEN_COLLAPSE_PATHS);
 
 		$this->assertEquals($paths, $collapsePaths);
 	}
@@ -104,8 +104,8 @@ class TracyBlueScreenExtensionTest extends \Matthias\SymfonyDependencyInjectionT
 			],
 		]);
 
-		$this->assertContainerBuilderHasParameter('vasek_purchart.tracy_blue_screen.blue_screen.collapse_paths');
-		$collapsePaths = $this->container->getParameter('vasek_purchart.tracy_blue_screen.blue_screen.collapse_paths');
+		$this->assertContainerBuilderHasParameter(TracyBlueScreenExtension::CONTAINER_PARAMETER_BLUE_SCREEN_COLLAPSE_PATHS);
+		$collapsePaths = $this->container->getParameter(TracyBlueScreenExtension::CONTAINER_PARAMETER_BLUE_SCREEN_COLLAPSE_PATHS);
 
 		$this->assertEmpty($collapsePaths);
 	}
