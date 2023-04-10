@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace VasekPurchart\TracyBlueScreenBundle\DependencyInjection;
 
+use PHPUnit\Framework\Assert;
 use Symfony\Bundle\TwigBundle\DependencyInjection\TwigExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
@@ -91,7 +92,7 @@ class TracyBlueScreenExtensionTest extends \Matthias\SymfonyDependencyInjectionT
 		$this->assertContainerBuilderHasParameter(TracyBlueScreenExtension::CONTAINER_PARAMETER_BLUE_SCREEN_COLLAPSE_PATHS);
 		$collapsePaths = $this->container->getParameter(TracyBlueScreenExtension::CONTAINER_PARAMETER_BLUE_SCREEN_COLLAPSE_PATHS);
 
-		$this->assertEquals($paths, $collapsePaths);
+		Assert::assertEquals($paths, $collapsePaths);
 	}
 
 	public function testEmptyCollapseDirs(): void
@@ -107,7 +108,7 @@ class TracyBlueScreenExtensionTest extends \Matthias\SymfonyDependencyInjectionT
 		$this->assertContainerBuilderHasParameter(TracyBlueScreenExtension::CONTAINER_PARAMETER_BLUE_SCREEN_COLLAPSE_PATHS);
 		$collapsePaths = $this->container->getParameter(TracyBlueScreenExtension::CONTAINER_PARAMETER_BLUE_SCREEN_COLLAPSE_PATHS);
 
-		$this->assertEmpty($collapsePaths);
+		Assert::assertEmpty($collapsePaths);
 	}
 
 	/**
@@ -164,7 +165,7 @@ class TracyBlueScreenExtensionTest extends \Matthias\SymfonyDependencyInjectionT
 				break;
 			}
 		}
-		$this->assertTrue($found, sprintf('%s not found in any elements of the given %s', $string, var_export($array, true)));
+		Assert::assertTrue($found, sprintf('%s not found in any elements of the given %s', $string, var_export($array, true)));
 	}
 
 }
