@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace VasekPurchart\TracyBlueScreenBundle\BlueScreen;
 
+use PHPUnit\Framework\Assert;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Event\ConsoleErrorEvent;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,23 +27,23 @@ class ConsoleBlueScreenExceptionListenerTest extends \PHPUnit\Framework\TestCase
 		$input = $this->createMock(InputInterface::class);
 		$output = $this->createMock(OutputInterface::class);
 		$output
-			->expects($this->once())
+			->expects(self::once())
 			->method('writeln')
-			->with($this->stringContains('saved in file'));
+			->with(Assert::stringContains('saved in file'));
 		$exception = new \Exception('Foobar!');
 
 		$event = new ConsoleErrorEvent($input, $output, $exception, $command);
 
 		$logger = $this->createMock(TracyLogger::class);
 		$logger
-			->expects($this->once())
+			->expects(self::once())
 			->method('getExceptionFile')
 			->with($exception)
-			->will($this->returnValue($file));
+			->will(self::returnValue($file));
 
 		$blueScreen = $this->createMock(BlueScreen::class);
 		$blueScreen
-			->expects($this->once())
+			->expects(self::once())
 			->method('renderToFile')
 			->with($exception, $file);
 
@@ -65,14 +66,14 @@ class ConsoleBlueScreenExceptionListenerTest extends \PHPUnit\Framework\TestCase
 		$input = $this->createMock(InputInterface::class);
 		$errorOutput = $this->createMock(OutputInterface::class);
 		$errorOutput
-			->expects($this->once())
+			->expects(self::once())
 			->method('writeln')
-			->with($this->stringContains('saved in file'));
+			->with(Assert::stringContains('saved in file'));
 		$output = $this->createMock(ConsoleOutputInterface::class);
 		$output
-			->expects($this->once())
+			->expects(self::once())
 			->method('getErrorOutput')
-			->will($this->returnValue($errorOutput));
+			->will(self::returnValue($errorOutput));
 
 		$exception = new \Exception('Foobar!');
 
@@ -80,14 +81,14 @@ class ConsoleBlueScreenExceptionListenerTest extends \PHPUnit\Framework\TestCase
 
 		$logger = $this->createMock(TracyLogger::class);
 		$logger
-			->expects($this->once())
+			->expects(self::once())
 			->method('getExceptionFile')
 			->with($exception)
-			->will($this->returnValue($file));
+			->will(self::returnValue($file));
 
 		$blueScreen = $this->createMock(BlueScreen::class);
 		$blueScreen
-			->expects($this->once())
+			->expects(self::once())
 			->method('renderToFile')
 			->with($exception, $file);
 
