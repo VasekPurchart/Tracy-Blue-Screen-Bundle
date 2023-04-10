@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace VasekPurchart\TracyBlueScreenBundle\DependencyInjection;
 
+use Generator;
 use Symfony\Bundle\TwigBundle\DependencyInjection\TwigExtension;
 use VasekPurchart\TracyBlueScreenBundle\BlueScreen\ConsoleBlueScreenErrorListener;
 
@@ -38,9 +39,31 @@ class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInj
 		];
 	}
 
-	public function testEnabledByDefault(): void
+	public function enabledDataProvider(): Generator
 	{
-		$this->loadExtensions();
+		yield 'enabled by default' => [
+			'configuration' => [],
+		];
+
+		yield 'enabled by configuration' => [
+			'configuration' => [
+				'tracy_blue_screen' => [
+					'console' => [
+						'enabled' => true,
+					],
+				],
+			],
+		];
+	}
+
+	/**
+	 * @dataProvider enabledDataProvider
+	 *
+	 * @param mixed[][] $configuration
+	 */
+	public function testEnabled(array $configuration): void
+	{
+		$this->loadExtensions($configuration);
 
 		$this->assertContainerBuilderHasService('vasek_purchart.tracy_blue_screen.blue_screen.console_blue_screen_error_listener', ConsoleBlueScreenErrorListener::class);
 		$this->assertContainerBuilderHasServiceDefinitionWithTag('vasek_purchart.tracy_blue_screen.blue_screen.console_blue_screen_error_listener', 'kernel.event_listener', [
@@ -62,74 +85,76 @@ class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInj
 		$this->assertContainerBuilderNotHasService('vasek_purchart.tracy_blue_screen.blue_screen.console_blue_screen_error_listener');
 	}
 
-	public function testEnabled(): void
+	/**
+	 * @return mixed[][]|\Generator
+	 */
+	public function configureContainerParameterDataProvider(): Generator
 	{
-		$this->loadExtensions([
-			'tracy_blue_screen' => [
-				'console' => [
-					'enabled' => true,
+		yield 'default logs dir is kernel logs dir' => [
+			'configuration' => [],
+			'parameterName' => TracyBlueScreenExtension::CONTAINER_PARAMETER_CONSOLE_LOG_DIRECTORY,
+			'expectedParameterValue' => __DIR__ . '/tests-logs-dir',
+		];
+
+		yield 'custom logs dir' => [
+			'configuration' => [
+				'tracy_blue_screen' => [
+					'console' => [
+						'log_directory' => __DIR__ . '/foobar',
+					],
 				],
 			],
-		]);
+			'parameterName' => TracyBlueScreenExtension::CONTAINER_PARAMETER_CONSOLE_LOG_DIRECTORY,
+			'expectedParameterValue' => __DIR__ . '/foobar',
+		];
 
-		$this->assertContainerBuilderHasService('vasek_purchart.tracy_blue_screen.blue_screen.console_blue_screen_error_listener', ConsoleBlueScreenErrorListener::class);
-		$this->assertContainerBuilderHasServiceDefinitionWithTag('vasek_purchart.tracy_blue_screen.blue_screen.console_blue_screen_error_listener', 'kernel.event_listener', [
-			'event' => 'console.error',
-			'priority' => '%' . TracyBlueScreenExtension::CONTAINER_PARAMETER_CONSOLE_LISTENER_PRIORITY . '%',
-		]);
-	}
+		yield 'default browser is null' => [
+			'configuration' => [],
+			'parameterName' => TracyBlueScreenExtension::CONTAINER_PARAMETER_CONSOLE_BROWSER,
+			'expectedParameterValue' => null,
+		];
 
-	public function testDefaultLogsDirIsKernelLogsDir(): void
-	{
-		$this->loadExtensions();
-
-		$this->assertContainerBuilderHasParameter(TracyBlueScreenExtension::CONTAINER_PARAMETER_CONSOLE_LOG_DIRECTORY, __DIR__ . '/tests-logs-dir');
-	}
-
-	public function testCustomLogsDir(): void
-	{
-		$this->loadExtensions([
-			'tracy_blue_screen' => [
-				'console' => [
-					'log_directory' => __DIR__ . '/foobar',
+		yield 'custom browser' => [
+			'configuration' => [
+				'tracy_blue_screen' => [
+					'console' => [
+						'browser' => 'google-chrome',
+					],
 				],
 			],
-		]);
+			'parameterName' => TracyBlueScreenExtension::CONTAINER_PARAMETER_CONSOLE_BROWSER,
+			'expectedParameterValue' => 'google-chrome',
+		];
 
-		$this->assertContainerBuilderHasParameter(TracyBlueScreenExtension::CONTAINER_PARAMETER_CONSOLE_LOG_DIRECTORY, __DIR__ . '/foobar');
-	}
-
-	public function testDefaultBrowserIsNull(): void
-	{
-		$this->loadExtensions();
-
-		$this->assertContainerBuilderHasParameter(TracyBlueScreenExtension::CONTAINER_PARAMETER_CONSOLE_BROWSER, null);
-	}
-
-	public function testCustomBrowser(): void
-	{
-		$this->loadExtensions([
-			'tracy_blue_screen' => [
-				'console' => [
-					'browser' => 'google-chrome',
+		yield 'listener priority' => [
+			'configuration' => [
+				'tracy_blue_screen' => [
+					'console' => [
+						'listener_priority' => 123,
+					],
 				],
 			],
-		]);
-
-		$this->assertContainerBuilderHasParameter(TracyBlueScreenExtension::CONTAINER_PARAMETER_CONSOLE_BROWSER, 'google-chrome');
+			'parameterName' => TracyBlueScreenExtension::CONTAINER_PARAMETER_CONSOLE_LISTENER_PRIORITY,
+			'expectedParameterValue' => 123,
+		];
 	}
 
-	public function testConfigureListenerPriority(): void
+	/**
+	 * @dataProvider configureContainerParameterDataProvider
+	 *
+	 * @param mixed[][] $configuration
+	 * @param string $parameterName
+	 * @param mixed $expectedParameterValue
+	 */
+	public function testConfigureContainerParameter(
+		array $configuration,
+		string $parameterName,
+		$expectedParameterValue
+	): void
 	{
-		$this->loadExtensions([
-			'tracy_blue_screen' => [
-				'console' => [
-					'listener_priority' => 123,
-				],
-			],
-		]);
+		$this->loadExtensions($configuration);
 
-		$this->assertContainerBuilderHasParameter(TracyBlueScreenExtension::CONTAINER_PARAMETER_CONSOLE_LISTENER_PRIORITY, 123);
+		$this->assertContainerBuilderHasParameter($parameterName, $expectedParameterValue);
 	}
 
 	/**
