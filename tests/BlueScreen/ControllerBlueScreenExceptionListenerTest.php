@@ -23,7 +23,7 @@ class ControllerBlueScreenExceptionListenerTest extends \PHPUnit\Framework\TestC
 
 		$blueScreen = $this->createMock(BlueScreen::class);
 		$blueScreen
-			->expects($this->once())
+			->expects(self::once())
 			->method('render')
 			->with($exception);
 

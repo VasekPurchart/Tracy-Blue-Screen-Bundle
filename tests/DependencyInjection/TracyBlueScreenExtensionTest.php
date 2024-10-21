@@ -4,6 +4,8 @@ declare(strict_types = 1);
 
 namespace VasekPurchart\TracyBlueScreenBundle\DependencyInjection;
 
+use Generator;
+use PHPUnit\Framework\Assert;
 use Symfony\Bundle\TwigBundle\DependencyInjection\TwigExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
@@ -63,51 +65,70 @@ class TracyBlueScreenExtensionTest extends \Matthias\SymfonyDependencyInjectionT
 		$this->assertArrayContainsStringPart('/vendor', $collapsePaths);
 	}
 
-	public function testCollapseCacheDirsByDefault(): void
+	/**
+	 * @return mixed[][]|\Generator
+	 */
+	public function collapsePathsConfigurationDataProvider(): Generator
 	{
-		$this->loadExtensions();
-
-		$this->assertContainerBuilderHasParameter('vasek_purchart.tracy_blue_screen.blue_screen.collapse_paths');
-		$collapsePaths = $this->container->getParameter('vasek_purchart.tracy_blue_screen.blue_screen.collapse_paths');
-
-		$this->assertArrayContainsStringPart('/bootstrap.php.cache', $collapsePaths);
-		$this->assertArrayContainsStringPart('/tests-cache-dir', $collapsePaths);
-	}
-
-	public function testSetCollapseDirs(): void
-	{
-		$paths = [
-			__DIR__ . '/foobar',
+		yield 'collapse cache dirs by default' => [
+			'configuration' => [],
+			'expectedCollapsePaths' => [
+				'/bootstrap.php.cache',
+				'/tests-cache-dir',
+			],
 		];
 
-		$this->loadExtensions([
-			'tracy_blue_screen' => [
-				'blue_screen' => [
-					'collapse_paths' => $paths,
+		yield 'set collapse dirs' => (static function (): array {
+			$paths = [
+				__DIR__ . '/foobar',
+			];
+
+			return [
+				'configuration' => [
+					'tracy_blue_screen' => [
+						'blue_screen' => [
+							'collapse_paths' => $paths,
+						],
+					],
 				],
-			],
-		]);
+				'expectedCollapsePaths' => $paths,
+			];
+		})();
 
-		$this->assertContainerBuilderHasParameter('vasek_purchart.tracy_blue_screen.blue_screen.collapse_paths');
-		$collapsePaths = $this->container->getParameter('vasek_purchart.tracy_blue_screen.blue_screen.collapse_paths');
-
-		$this->assertEquals($paths, $collapsePaths);
+		yield 'empty collapse dirs' => (static function (): array {
+			return [
+				'configuration' => [
+					'tracy_blue_screen' => [
+						'blue_screen' => [
+							'collapse_paths' => [],
+						],
+					],
+				],
+				'expectedCollapsePaths' => [],
+			];
+		})();
 	}
 
-	public function testEmptyCollapseDirs(): void
+	/**
+	 * @dataProvider collapsePathsConfigurationDataProvider
+	 *
+	 * @param mixed[][] $configuration
+	 * @param string[] $expectedCollapsePaths
+	 */
+	public function testCollapsePathsConfiguration(
+		array $configuration,
+		array $expectedCollapsePaths
+	): void
 	{
-		$this->loadExtensions([
-			'tracy_blue_screen' => [
-				'blue_screen' => [
-					'collapse_paths' => [],
-				],
-			],
-		]);
+		$this->loadExtensions($configuration);
 
-		$this->assertContainerBuilderHasParameter('vasek_purchart.tracy_blue_screen.blue_screen.collapse_paths');
-		$collapsePaths = $this->container->getParameter('vasek_purchart.tracy_blue_screen.blue_screen.collapse_paths');
+		$this->assertContainerBuilderHasParameter(TracyBlueScreenExtension::CONTAINER_PARAMETER_BLUE_SCREEN_COLLAPSE_PATHS);
+		$collapsePaths = $this->container->getParameter(TracyBlueScreenExtension::CONTAINER_PARAMETER_BLUE_SCREEN_COLLAPSE_PATHS);
 
-		$this->assertEmpty($collapsePaths);
+		foreach ($expectedCollapsePaths as $expectedCollapsePath) {
+			$this->assertArrayContainsStringPart($expectedCollapsePath, $collapsePaths);
+		}
+		Assert::assertCount(count($expectedCollapsePaths), $collapsePaths);
 	}
 
 	/**
@@ -164,7 +185,7 @@ class TracyBlueScreenExtensionTest extends \Matthias\SymfonyDependencyInjectionT
 				break;
 			}
 		}
-		$this->assertTrue($found, sprintf('%s not found in any elements of the given %s', $string, var_export($array, true)));
+		Assert::assertTrue($found, sprintf('%s not found in any elements of the given %s', $string, var_export($array, true)));
 	}
 
 }
