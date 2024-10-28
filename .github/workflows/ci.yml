@@ -17,7 +17,7 @@ jobs:
         steps:
             -
                 name: 'Checkout'
-                uses: 'actions/checkout@v4.2.1'
+                uses: 'actions/checkout@v4.2.2'
             -
                 name: 'Setup PHP ${{ env.CONSISTENCE_PHP_VERSION }}'
                 uses: 'shivammathur/setup-php@2.31.1'
@@ -52,7 +52,7 @@ jobs:
         steps:
             -
                 name: 'Checkout'
-                uses: 'actions/checkout@v4.2.1'
+                uses: 'actions/checkout@v4.2.2'
             -
                 name: 'Setup PHP ${{ matrix.php-version }}'
                 uses: 'shivammathur/setup-php@2.31.1'
@@ -79,7 +79,7 @@ jobs:
         steps:
             -
                 name: 'Checkout'
-                uses: 'actions/checkout@v4.2.1'
+                uses: 'actions/checkout@v4.2.2'
             -
                 name: 'Setup PHP ${{ env.CONSISTENCE_PHP_VERSION }}'
                 uses: 'shivammathur/setup-php@2.31.1'
@@ -107,7 +107,7 @@ jobs:
         steps:
             -
                 name: 'Checkout'
-                uses: 'actions/checkout@v4.2.1'
+                uses: 'actions/checkout@v4.2.2'
             -
                 name: 'Setup PHP ${{ env.CONSISTENCE_PHP_VERSION }}'
                 uses: 'shivammathur/setup-php@2.31.1'
@@ -145,7 +145,7 @@ jobs:
         steps:
             -
                 name: 'Checkout'
-                uses: 'actions/checkout@v4.2.1'
+                uses: 'actions/checkout@v4.2.2'
             -
                 name: 'Setup PHP ${{ matrix.php-version }}'
                 uses: 'shivammathur/setup-php@2.31.1'
