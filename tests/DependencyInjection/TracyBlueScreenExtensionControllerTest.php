@@ -5,8 +5,7 @@ declare(strict_types = 1);
 namespace VasekPurchart\TracyBlueScreenBundle\DependencyInjection;
 
 use Generator;
-use Symfony\Bundle\TwigBundle\DependencyInjection\TwigExtension;
-use VasekPurchart\TracyBlueScreenBundle\BlueScreen\ControllerBlueScreenExceptionListener;
+use VasekPurchart\TracyBlueScreenBundle\BlueScreen\BlueScreenErrorRenderer;
 
 class TracyBlueScreenExtensionControllerTest extends \Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase
 {
@@ -18,7 +17,6 @@ class TracyBlueScreenExtensionControllerTest extends \Matthias\SymfonyDependency
 	{
 		return [
 			new TracyBlueScreenExtension(),
-			new TwigExtension(),
 		];
 	}
 
@@ -123,29 +121,9 @@ class TracyBlueScreenExtensionControllerTest extends \Matthias\SymfonyDependency
 		$this->setKernelParameters($kernelEnvironment, $kernelDebugParameter);
 		$this->loadExtensions($configuration);
 
-		if ($expectToBeEnabled) {
-			$this->assertContainerBuilderHasService('vasek_purchart.tracy_blue_screen.blue_screen.controller_blue_screen_exception_listener', ControllerBlueScreenExceptionListener::class);
-			$this->assertContainerBuilderHasServiceDefinitionWithTag('vasek_purchart.tracy_blue_screen.blue_screen.controller_blue_screen_exception_listener', 'kernel.event_listener', [
-				'event' => 'kernel.exception',
-				'priority' => '%vasek_purchart.tracy_blue_screen.controller.listener_priority%',
-			]);
-		} else {
-			$this->assertContainerBuilderNotHasService('vasek_purchart.tracy_blue_screen.blue_screen.controller_blue_screen_exception_listener');
-		}
-	}
-
-	public function testConfigureListenerPriority(): void
-	{
-		$this->setKernelParameters('dev', true);
-		$this->loadExtensions([
-			'tracy_blue_screen' => [
-				'controller' => [
-					'listener_priority' => 123,
-				],
-			],
-		]);
-
-		$this->assertContainerBuilderHasParameter('vasek_purchart.tracy_blue_screen.controller.listener_priority', 123);
+		$this->assertContainerBuilderHasParameter('vasek_purchart.tracy_blue_screen.controller.enabled', $expectToBeEnabled);
+		// should be present even if disabled, so that it can be used in custom error controller if needed
+		$this->assertContainerBuilderHasService('vasek_purchart.tracy_blue_screen.blue_screen.error_renderer', BlueScreenErrorRenderer::class);
 	}
 
 	private function setKernelParameters(
@@ -159,12 +137,6 @@ class TracyBlueScreenExtensionControllerTest extends \Matthias\SymfonyDependency
 		$this->setParameter('kernel.cache_dir', __DIR__ . '/tests-cache-dir');
 		$this->setParameter('kernel.environment', $kernelEnvironment);
 		$this->setParameter('kernel.debug', $kernelDebugParameter);
-		$this->setParameter('kernel.bundles_metadata', [
-			'TwigBundle' => [
-				'namespace' => 'Symfony\\Bundle\\TwigBundle',
-				'path' => __DIR__,
-			],
-		]);
 	}
 
 	/**

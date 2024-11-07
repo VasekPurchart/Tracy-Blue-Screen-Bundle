@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-use Symfony\Component\Debug\ErrorHandler;
+use Symfony\Component\ErrorHandler\ErrorHandler;
 
 error_reporting(E_ALL);
 

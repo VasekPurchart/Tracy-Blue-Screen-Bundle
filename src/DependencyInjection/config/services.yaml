@@ -1,4 +1,20 @@
 services:
+    vasek_purchart.tracy_blue_screen.blue_screen.error_renderer: '@vasek_purchart.tracy_blue_screen.blue_screen.error_renderer.default'
+
+    vasek_purchart.tracy_blue_screen.blue_screen.error_renderer.default:
+        class: 'VasekPurchart\TracyBlueScreenBundle\BlueScreen\BlueScreenErrorRenderer'
+        arguments:
+            $blueScreen: '@vasek_purchart.tracy_blue_screen.tracy.blue_screen'
+            $debug: '@vasek_purchart.tracy_blue_screen.blue_screen.error_renderer.is_debug'
+            $fallbackErrorRenderer: '@error_renderer'
+
+    vasek_purchart.tracy_blue_screen.blue_screen.error_renderer.is_debug:
+        class: 'Closure'
+        factory: 'Symfony\Component\ErrorHandler\ErrorRenderer\HtmlErrorRenderer::isDebug'
+        arguments:
+            $requestStack: '@request_stack'
+            $debug: '%kernel.debug%'
+
     vasek_purchart.tracy_blue_screen.tracy.blue_screen: '@vasek_purchart.tracy_blue_screen.tracy.blue_screen.default'
 
     vasek_purchart.tracy_blue_screen.tracy.blue_screen.default:

@@ -6,7 +6,6 @@ namespace VasekPurchart\TracyBlueScreenBundle\DependencyInjection;
 
 use Generator;
 use PHPUnit\Framework\Assert;
-use Symfony\Bundle\TwigBundle\DependencyInjection\TwigExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Tracy\BlueScreen;
@@ -21,17 +20,7 @@ class TracyBlueScreenExtensionTest extends \Matthias\SymfonyDependencyInjectionT
 	{
 		return [
 			new TracyBlueScreenExtension(),
-			new TwigExtension(),
 		];
-	}
-
-	public function testDependsOnTwigBundle(): void
-	{
-		$containerBuilder = new ContainerBuilder();
-		$extension = new TracyBlueScreenExtension();
-
-		$this->expectException(\VasekPurchart\TracyBlueScreenBundle\DependencyInjection\TwigBundleRequiredException::class);
-		$extension->prepend($containerBuilder);
 	}
 
 	public function testOnlyAddCollapsePaths(): void
@@ -124,12 +113,6 @@ class TracyBlueScreenExtensionTest extends \Matthias\SymfonyDependencyInjectionT
 		$this->setParameter('kernel.cache_dir', __DIR__ . '/tests-cache-dir');
 		$this->setParameter('kernel.environment', 'dev');
 		$this->setParameter('kernel.debug', true);
-		$this->setParameter('kernel.bundles_metadata', [
-			'TwigBundle' => [
-				'namespace' => 'Symfony\\Bundle\\TwigBundle',
-				'path' => __DIR__,
-			],
-		]);
 	}
 
 	/**

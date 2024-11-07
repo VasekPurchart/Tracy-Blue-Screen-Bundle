@@ -5,7 +5,6 @@ declare(strict_types = 1);
 namespace VasekPurchart\TracyBlueScreenBundle\DependencyInjection;
 
 use Generator;
-use Symfony\Bundle\TwigBundle\DependencyInjection\TwigExtension;
 use VasekPurchart\TracyBlueScreenBundle\BlueScreen\ConsoleBlueScreenErrorListener;
 
 class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase
@@ -18,7 +17,6 @@ class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInj
 	{
 		return [
 			new TracyBlueScreenExtension(),
-			new TwigExtension(),
 		];
 	}
 
@@ -218,12 +216,6 @@ class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInj
 		$this->setParameter('kernel.cache_dir', __DIR__ . '/tests-cache-dir');
 		$this->setParameter('kernel.environment', $kernelEnvironment);
 		$this->setParameter('kernel.debug', $kernelDebugParameter);
-		$this->setParameter('kernel.bundles_metadata', [
-			'TwigBundle' => [
-				'namespace' => 'Symfony\\Bundle\\TwigBundle',
-				'path' => __DIR__,
-			],
-		]);
 	}
 
 	/**
