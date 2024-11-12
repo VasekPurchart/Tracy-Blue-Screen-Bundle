@@ -73,7 +73,7 @@ class TracyBlueScreenExtension
 		);
 
 		$loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/config'));
-		$loader->load('services.yml');
+		$loader->load('services.yaml');
 
 		$environment = $container->getParameter('kernel.environment');
 		$debug = $container->getParameter('kernel.debug');
@@ -83,14 +83,14 @@ class TracyBlueScreenExtension
 			$environment,
 			$debug
 		)) {
-			$loader->load('console_listener.yml');
+			$loader->load('console_listener.yaml');
 		}
 		if ($this->isEnabled(
 			$mergedConfig[Configuration::SECTION_CONTROLLER][Configuration::PARAMETER_CONTROLLER_ENABLED],
 			$environment,
 			$debug
 		)) {
-			$loader->load('controller_listener.yml');
+			$loader->load('controller_listener.yaml');
 		}
 	}
 
