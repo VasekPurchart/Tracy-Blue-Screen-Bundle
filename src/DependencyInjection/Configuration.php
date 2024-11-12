@@ -28,7 +28,7 @@ class Configuration implements \Symfony\Component\Config\Definition\Configuratio
 	private $rootNode;
 
 	/** @var string */
-	private $kernelRootDir;
+	private $kernelProjectDir;
 
 	/** @var string */
 	private $kernelLogsDir;
@@ -38,21 +38,21 @@ class Configuration implements \Symfony\Component\Config\Definition\Configuratio
 
 	public function __construct(
 		string $rootNode,
-		string $kernelRootDir,
+		string $kernelProjectDir,
 		string $kernelLogsDir,
 		string $kernelCacheDir
 	)
 	{
 		$this->rootNode = $rootNode;
-		$this->kernelRootDir = $kernelRootDir;
+		$this->kernelProjectDir = $kernelProjectDir;
 		$this->kernelLogsDir = $kernelLogsDir;
 		$this->kernelCacheDir = $kernelCacheDir;
 	}
 
 	public function getConfigTreeBuilder(): TreeBuilder
 	{
-		$treeBuilder = new TreeBuilder();
-		$rootNode = $treeBuilder->root($this->rootNode);
+		$treeBuilder = new TreeBuilder($this->rootNode);
+		$rootNode = $treeBuilder->getRootNode();
 
 		$rootNode->children()->append($this->createControllerNode(self::SECTION_CONTROLLER));
 		$rootNode->children()->append($this->createConsoleNode(self::SECTION_CONSOLE));
@@ -141,7 +141,7 @@ class Configuration implements \Symfony\Component\Config\Definition\Configuratio
 		$node->info('Add paths which should be collapsed (for external/compiled code) so that actual error is expanded.');
 		$node->prototype('scalar');
 		$node->defaultValue([
-			$this->kernelRootDir . '/bootstrap.php.cache',
+			$this->kernelProjectDir . '/bootstrap.php.cache',
 			$this->kernelCacheDir,
 		]);
 

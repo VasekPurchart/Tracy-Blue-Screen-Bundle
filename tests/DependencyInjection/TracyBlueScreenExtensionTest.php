@@ -107,7 +107,6 @@ class TracyBlueScreenExtensionTest extends \Matthias\SymfonyDependencyInjectionT
 
 	private function setKernelParameters(): void
 	{
-		$this->setParameter('kernel.root_dir', __DIR__);
 		$this->setParameter('kernel.project_dir', __DIR__);
 		$this->setParameter('kernel.logs_dir', __DIR__);
 		$this->setParameter('kernel.cache_dir', __DIR__ . '/tests-cache-dir');
