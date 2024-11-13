@@ -19,4 +19,11 @@
 	<rule ref="SlevomatCodingStandard.Classes.UnusedPrivateElements">
 		<exclude-pattern>*/data/*.php</exclude-pattern>
 	</rule>
+	<rule ref="SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly">
+		<properties>
+			<property name="specialExceptionNames" type="array">
+				<element value="Symfony\Component\Debug\Exception\FatalThrowableError"/>
+			</property>
+		</properties>
+	</rule>
 </ruleset>
