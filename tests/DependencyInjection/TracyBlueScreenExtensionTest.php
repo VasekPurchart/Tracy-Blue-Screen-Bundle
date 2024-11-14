@@ -122,8 +122,8 @@ class TracyBlueScreenExtensionTest extends \Matthias\SymfonyDependencyInjectionT
 	{
 		$this->loadExtensions($configuration);
 
-		$this->assertContainerBuilderHasParameter(TracyBlueScreenExtension::CONTAINER_PARAMETER_BLUE_SCREEN_COLLAPSE_PATHS);
-		$collapsePaths = $this->container->getParameter(TracyBlueScreenExtension::CONTAINER_PARAMETER_BLUE_SCREEN_COLLAPSE_PATHS);
+		$this->assertContainerBuilderHasParameter('vasek_purchart.tracy_blue_screen.blue_screen.collapse_paths');
+		$collapsePaths = $this->container->getParameter('vasek_purchart.tracy_blue_screen.blue_screen.collapse_paths');
 
 		foreach ($expectedCollapsePaths as $expectedCollapsePath) {
 			$this->assertArrayContainsStringPart($expectedCollapsePath, $collapsePaths);
