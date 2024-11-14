@@ -11,23 +11,6 @@ use VasekPurchart\TracyBlueScreenBundle\BlueScreen\ControllerBlueScreenException
 class TracyBlueScreenExtensionControllerTest extends \Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase
 {
 
-	public function setUp(): void
-	{
-		parent::setUp();
-		$this->setParameter('kernel.root_dir', __DIR__);
-		$this->setParameter('kernel.project_dir', __DIR__);
-		$this->setParameter('kernel.logs_dir', __DIR__);
-		$this->setParameter('kernel.cache_dir', __DIR__ . '/tests-cache-dir');
-		$this->setParameter('kernel.environment', 'dev');
-		$this->setParameter('kernel.debug', true);
-		$this->setParameter('kernel.bundles_metadata', [
-			'TwigBundle' => [
-				'namespace' => 'Symfony\\Bundle\\TwigBundle',
-				'path' => __DIR__,
-			],
-		]);
-	}
-
 	/**
 	 * @return \Symfony\Component\DependencyInjection\Extension\ExtensionInterface[]
 	 */
@@ -63,6 +46,7 @@ class TracyBlueScreenExtensionControllerTest extends \Matthias\SymfonyDependency
 	 */
 	public function testEnabled(array $configuration): void
 	{
+		$this->setKernelParameters();
 		$this->loadExtensions($configuration);
 
 		$this->assertContainerBuilderHasService('vasek_purchart.tracy_blue_screen.blue_screen.controller_blue_screen_exception_listener', ControllerBlueScreenExceptionListener::class);
@@ -74,6 +58,7 @@ class TracyBlueScreenExtensionControllerTest extends \Matthias\SymfonyDependency
 
 	public function testDisabled(): void
 	{
+		$this->setKernelParameters();
 		$this->loadExtensions([
 			'tracy_blue_screen' => [
 				'controller' => [
@@ -87,6 +72,7 @@ class TracyBlueScreenExtensionControllerTest extends \Matthias\SymfonyDependency
 
 	public function testConfigureListenerPriority(): void
 	{
+		$this->setKernelParameters();
 		$this->loadExtensions([
 			'tracy_blue_screen' => [
 				'controller' => [
@@ -96,6 +82,22 @@ class TracyBlueScreenExtensionControllerTest extends \Matthias\SymfonyDependency
 		]);
 
 		$this->assertContainerBuilderHasParameter('vasek_purchart.tracy_blue_screen.controller.listener_priority', 123);
+	}
+
+	private function setKernelParameters(): void
+	{
+		$this->setParameter('kernel.root_dir', __DIR__);
+		$this->setParameter('kernel.project_dir', __DIR__);
+		$this->setParameter('kernel.logs_dir', __DIR__);
+		$this->setParameter('kernel.cache_dir', __DIR__ . '/tests-cache-dir');
+		$this->setParameter('kernel.environment', 'dev');
+		$this->setParameter('kernel.debug', true);
+		$this->setParameter('kernel.bundles_metadata', [
+			'TwigBundle' => [
+				'namespace' => 'Symfony\\Bundle\\TwigBundle',
+				'path' => __DIR__,
+			],
+		]);
 	}
 
 	/**

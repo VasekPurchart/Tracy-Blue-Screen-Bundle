@@ -11,23 +11,6 @@ use VasekPurchart\TracyBlueScreenBundle\BlueScreen\ConsoleBlueScreenErrorListene
 class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase
 {
 
-	public function setUp(): void
-	{
-		parent::setUp();
-		$this->setParameter('kernel.root_dir', __DIR__);
-		$this->setParameter('kernel.project_dir', __DIR__);
-		$this->setParameter('kernel.logs_dir', __DIR__ . '/tests-logs-dir');
-		$this->setParameter('kernel.cache_dir', __DIR__ . '/tests-cache-dir');
-		$this->setParameter('kernel.environment', 'dev');
-		$this->setParameter('kernel.debug', true);
-		$this->setParameter('kernel.bundles_metadata', [
-			'TwigBundle' => [
-				'namespace' => 'Symfony\\Bundle\\TwigBundle',
-				'path' => __DIR__,
-			],
-		]);
-	}
-
 	/**
 	 * @return \Symfony\Component\DependencyInjection\Extension\ExtensionInterface[]
 	 */
@@ -63,6 +46,7 @@ class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInj
 	 */
 	public function testEnabled(array $configuration): void
 	{
+		$this->setKernelParameters();
 		$this->loadExtensions($configuration);
 
 		$this->assertContainerBuilderHasService('vasek_purchart.tracy_blue_screen.blue_screen.console_blue_screen_error_listener', ConsoleBlueScreenErrorListener::class);
@@ -74,6 +58,7 @@ class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInj
 
 	public function testDisabled(): void
 	{
+		$this->setKernelParameters();
 		$this->loadExtensions([
 			'tracy_blue_screen' => [
 				'console' => [
@@ -152,9 +137,26 @@ class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInj
 		$expectedParameterValue
 	): void
 	{
+		$this->setKernelParameters();
 		$this->loadExtensions($configuration);
 
 		$this->assertContainerBuilderHasParameter($parameterName, $expectedParameterValue);
+	}
+
+	private function setKernelParameters(): void
+	{
+		$this->setParameter('kernel.root_dir', __DIR__);
+		$this->setParameter('kernel.project_dir', __DIR__);
+		$this->setParameter('kernel.logs_dir', __DIR__ . '/tests-logs-dir');
+		$this->setParameter('kernel.cache_dir', __DIR__ . '/tests-cache-dir');
+		$this->setParameter('kernel.environment', 'dev');
+		$this->setParameter('kernel.debug', true);
+		$this->setParameter('kernel.bundles_metadata', [
+			'TwigBundle' => [
+				'namespace' => 'Symfony\\Bundle\\TwigBundle',
+				'path' => __DIR__,
+			],
+		]);
 	}
 
 	/**

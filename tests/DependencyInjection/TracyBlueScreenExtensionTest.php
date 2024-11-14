@@ -14,23 +14,6 @@ use Tracy\BlueScreen;
 class TracyBlueScreenExtensionTest extends \Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase
 {
 
-	public function setUp(): void
-	{
-		parent::setUp();
-		$this->setParameter('kernel.root_dir', __DIR__);
-		$this->setParameter('kernel.project_dir', __DIR__);
-		$this->setParameter('kernel.logs_dir', __DIR__);
-		$this->setParameter('kernel.cache_dir', __DIR__ . '/tests-cache-dir');
-		$this->setParameter('kernel.environment', 'dev');
-		$this->setParameter('kernel.debug', true);
-		$this->setParameter('kernel.bundles_metadata', [
-			'TwigBundle' => [
-				'namespace' => 'Symfony\\Bundle\\TwigBundle',
-				'path' => __DIR__,
-			],
-		]);
-	}
-
 	/**
 	 * @return \Symfony\Component\DependencyInjection\Extension\ExtensionInterface[]
 	 */
@@ -53,6 +36,7 @@ class TracyBlueScreenExtensionTest extends \Matthias\SymfonyDependencyInjectionT
 
 	public function testOnlyAddCollapsePaths(): void
 	{
+		$this->setKernelParameters();
 		$this->loadExtensions();
 
 		$this->assertContainerBuilderHasService('vasek_purchart.tracy_blue_screen.tracy.blue_screen.default', BlueScreen::class);
@@ -120,6 +104,7 @@ class TracyBlueScreenExtensionTest extends \Matthias\SymfonyDependencyInjectionT
 		array $expectedCollapsePaths
 	): void
 	{
+		$this->setKernelParameters();
 		$this->loadExtensions($configuration);
 
 		$this->assertContainerBuilderHasParameter('vasek_purchart.tracy_blue_screen.blue_screen.collapse_paths');
@@ -129,6 +114,22 @@ class TracyBlueScreenExtensionTest extends \Matthias\SymfonyDependencyInjectionT
 			$this->assertArrayContainsStringPart($expectedCollapsePath, $collapsePaths);
 		}
 		Assert::assertCount(count($expectedCollapsePaths), $collapsePaths);
+	}
+
+	private function setKernelParameters(): void
+	{
+		$this->setParameter('kernel.root_dir', __DIR__);
+		$this->setParameter('kernel.project_dir', __DIR__);
+		$this->setParameter('kernel.logs_dir', __DIR__);
+		$this->setParameter('kernel.cache_dir', __DIR__ . '/tests-cache-dir');
+		$this->setParameter('kernel.environment', 'dev');
+		$this->setParameter('kernel.debug', true);
+		$this->setParameter('kernel.bundles_metadata', [
+			'TwigBundle' => [
+				'namespace' => 'Symfony\\Bundle\\TwigBundle',
+				'path' => __DIR__,
+			],
+		]);
 	}
 
 	/**
