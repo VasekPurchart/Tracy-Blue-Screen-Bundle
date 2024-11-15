@@ -24,11 +24,37 @@ class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInj
 
 	public function enabledDataProvider(): Generator
 	{
-		yield 'enabled by default' => [
+		yield 'debug: true, dev env, default configuration' => [
+			'kernelEnvironment' => 'dev',
+			'kernelDebugParameter' => true,
 			'configuration' => [],
+			'expectToBeEnabled' => true,
 		];
 
-		yield 'enabled by configuration' => [
+		yield 'debug: false, dev env, default configuration' => [
+			'kernelEnvironment' => 'dev',
+			'kernelDebugParameter' => false,
+			'configuration' => [],
+			'expectToBeEnabled' => false,
+		];
+
+		yield 'debug: true, prod env, default configuration' => [
+			'kernelEnvironment' => 'prod',
+			'kernelDebugParameter' => true,
+			'configuration' => [],
+			'expectToBeEnabled' => false,
+		];
+
+		yield 'debug: true, "unknown" env, default configuration' => [
+			'kernelEnvironment' => 'xxx',
+			'kernelDebugParameter' => true,
+			'configuration' => [],
+			'expectToBeEnabled' => false,
+		];
+
+		yield 'debug: true, dev env, console explicitly enabled' => [
+			'kernelEnvironment' => 'dev',
+			'kernelDebugParameter' => true,
 			'configuration' => [
 				'tracy_blue_screen' => [
 					'console' => [
@@ -36,38 +62,76 @@ class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInj
 					],
 				],
 			],
+			'expectToBeEnabled' => true,
+		];
+
+		yield 'debug: false, dev env, console explicitly enabled' => [
+			'kernelEnvironment' => 'dev',
+			'kernelDebugParameter' => false,
+			'configuration' => [
+				'tracy_blue_screen' => [
+					'console' => [
+						'enabled' => true,
+					],
+				],
+			],
+			'expectToBeEnabled' => true,
+		];
+
+		yield 'debug: true, prod env, console explicitly enabled' => [
+			'kernelEnvironment' => 'prod',
+			'kernelDebugParameter' => true,
+			'configuration' => [
+				'tracy_blue_screen' => [
+					'console' => [
+						'enabled' => true,
+					],
+				],
+			],
+			'expectToBeEnabled' => true,
+		];
+
+		yield 'debug: true, dev env, console explicitly disabled' => [
+			'kernelEnvironment' => 'dev',
+			'kernelDebugParameter' => true,
+			'configuration' => [
+				'tracy_blue_screen' => [
+					'console' => [
+						'enabled' => false,
+					],
+				],
+			],
+			'expectToBeEnabled' => false,
 		];
 	}
 
 	/**
 	 * @dataProvider enabledDataProvider
 	 *
+	 * @param string $kernelEnvironment
+	 * @param bool $kernelDebugParameter
 	 * @param mixed[][] $configuration
+	 * @param bool $expectToBeEnabled
 	 */
-	public function testEnabled(array $configuration): void
+	public function testEnabled(
+		string $kernelEnvironment,
+		bool $kernelDebugParameter,
+		array $configuration,
+		bool $expectToBeEnabled
+	): void
 	{
-		$this->setKernelParameters();
+		$this->setKernelParameters($kernelEnvironment, $kernelDebugParameter);
 		$this->loadExtensions($configuration);
 
-		$this->assertContainerBuilderHasService('vasek_purchart.tracy_blue_screen.blue_screen.console_blue_screen_error_listener', ConsoleBlueScreenErrorListener::class);
-		$this->assertContainerBuilderHasServiceDefinitionWithTag('vasek_purchart.tracy_blue_screen.blue_screen.console_blue_screen_error_listener', 'kernel.event_listener', [
-			'event' => 'console.error',
-			'priority' => '%vasek_purchart.tracy_blue_screen.console.listener_priority%',
-		]);
-	}
-
-	public function testDisabled(): void
-	{
-		$this->setKernelParameters();
-		$this->loadExtensions([
-			'tracy_blue_screen' => [
-				'console' => [
-					'enabled' => false,
-				],
-			],
-		]);
-
-		$this->assertContainerBuilderNotHasService('vasek_purchart.tracy_blue_screen.blue_screen.console_blue_screen_error_listener');
+		if ($expectToBeEnabled) {
+			$this->assertContainerBuilderHasService('vasek_purchart.tracy_blue_screen.blue_screen.console_blue_screen_error_listener', ConsoleBlueScreenErrorListener::class);
+			$this->assertContainerBuilderHasServiceDefinitionWithTag('vasek_purchart.tracy_blue_screen.blue_screen.console_blue_screen_error_listener', 'kernel.event_listener', [
+				'event' => 'console.error',
+				'priority' => '%vasek_purchart.tracy_blue_screen.console.listener_priority%',
+			]);
+		} else {
+			$this->assertContainerBuilderNotHasService('vasek_purchart.tracy_blue_screen.blue_screen.console_blue_screen_error_listener');
+		}
 	}
 
 	/**
@@ -137,20 +201,23 @@ class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInj
 		$expectedParameterValue
 	): void
 	{
-		$this->setKernelParameters();
+		$this->setKernelParameters('dev', true);
 		$this->loadExtensions($configuration);
 
 		$this->assertContainerBuilderHasParameter($parameterName, $expectedParameterValue);
 	}
 
-	private function setKernelParameters(): void
+	private function setKernelParameters(
+		string $kernelEnvironment,
+		bool $kernelDebugParameter
+	): void
 	{
 		$this->setParameter('kernel.root_dir', __DIR__);
 		$this->setParameter('kernel.project_dir', __DIR__);
 		$this->setParameter('kernel.logs_dir', __DIR__ . '/tests-logs-dir');
 		$this->setParameter('kernel.cache_dir', __DIR__ . '/tests-cache-dir');
-		$this->setParameter('kernel.environment', 'dev');
-		$this->setParameter('kernel.debug', true);
+		$this->setParameter('kernel.environment', $kernelEnvironment);
+		$this->setParameter('kernel.debug', $kernelDebugParameter);
 		$this->setParameter('kernel.bundles_metadata', [
 			'TwigBundle' => [
 				'namespace' => 'Symfony\\Bundle\\TwigBundle',
