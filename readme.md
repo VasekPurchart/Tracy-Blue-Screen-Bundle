@@ -76,7 +76,7 @@ tracy_blue_screen:
         # Add paths which should be collapsed (for external/compiled code) so that actual error is expanded.
         collapse_paths:
             # Defaults:
-            - '%kernel.root_dir%/bootstrap.php.cache'
+            - '%kernel.project_dir%/bootstrap.php.cache'
             - '%kernel.cache_dir%'
             # plus paths set in BlueScreen instance used (/vendor)
 
