@@ -19,7 +19,6 @@ class Configuration implements \Symfony\Component\Config\Definition\Configuratio
 	public const PARAMETER_CONSOLE_LISTENER_PRIORITY = 'listener_priority';
 	public const PARAMETER_CONSOLE_LOG_DIRECTORY = 'log_directory';
 	public const PARAMETER_CONTROLLER_ENABLED = 'enabled';
-	public const PARAMETER_CONTROLLER_LISTENER_PRIORITY = 'listener_priority';
 
 	public const SECTION_BLUE_SCREEN = 'blue_screen';
 	public const SECTION_CONSOLE = 'console';
@@ -67,7 +66,6 @@ class Configuration implements \Symfony\Component\Config\Definition\Configuratio
 		$node = new ArrayNodeDefinition($nodeName);
 		$node->addDefaultsIfNotSet();
 		$node->children()->append($this->createDebugNode(self::PARAMETER_CONTROLLER_ENABLED, 'Enable debug screen for controllers.'));
-		$node->children()->append($this->createPriorityNode(self::PARAMETER_CONTROLLER_LISTENER_PRIORITY));
 
 		return $node;
 	}

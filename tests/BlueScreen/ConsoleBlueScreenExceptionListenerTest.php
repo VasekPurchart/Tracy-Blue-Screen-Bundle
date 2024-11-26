@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace VasekPurchart\TracyBlueScreenBundle\BlueScreen;
 
+use Generator;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Event\ConsoleErrorEvent;
@@ -17,7 +18,35 @@ use org\bovigo\vfs\vfsStream;
 class ConsoleBlueScreenExceptionListenerTest extends \PHPUnit\Framework\TestCase
 {
 
-	public function testLogTracy(): void
+	public function throwableDataProvider(): Generator
+	{
+		yield 'Exception' => [
+			'throwable' => new \Exception('Foobar!'),
+		];
+
+		yield 'Error' => [
+			'throwable' => new \Error(),
+		];
+
+		yield 'notice' => [ // relies on ErrorHandler to be converted to a Throwable based error
+			'throwable' => (static function (): \Throwable {
+				try {
+					$foo[0];
+				} catch (\Throwable $e) {
+					return $e;
+				}
+			})(),
+		];
+	}
+
+	/**
+	 * @dataProvider throwableDataProvider
+	 *
+	 * @param \Throwable $throwable
+	 */
+	public function testLogTracy(
+		\Throwable $throwable
+	): void
 	{
 		vfsStream::setup('tracy');
 		$directory = vfsStream::url('tracy');
@@ -30,22 +59,21 @@ class ConsoleBlueScreenExceptionListenerTest extends \PHPUnit\Framework\TestCase
 			->expects(self::once())
 			->method('writeln')
 			->with(Assert::stringContains('saved in file'));
-		$exception = new \Exception('Foobar!');
 
-		$event = new ConsoleErrorEvent($input, $output, $exception, $command);
+		$event = new ConsoleErrorEvent($input, $output, $throwable, $command);
 
 		$logger = $this->createMock(TracyLogger::class);
 		$logger
 			->expects(self::once())
 			->method('getExceptionFile')
-			->with($exception)
+			->with($throwable)
 			->will(self::returnValue($file));
 
 		$blueScreen = $this->createMock(BlueScreen::class);
 		$blueScreen
 			->expects(self::once())
 			->method('renderToFile')
-			->with($exception, $file);
+			->with($throwable, $file);
 
 		$listener = new ConsoleBlueScreenErrorListener(
 			$logger,
@@ -56,7 +84,14 @@ class ConsoleBlueScreenExceptionListenerTest extends \PHPUnit\Framework\TestCase
 		$listener->onConsoleError($event);
 	}
 
-	public function testUsesErrorOutputIfPossible(): void
+	/**
+	 * @dataProvider throwableDataProvider
+	 *
+	 * @param \Throwable $throwable
+	 */
+	public function testUsesErrorOutputIfPossible(
+		\Throwable $throwable
+	): void
 	{
 		vfsStream::setup('tracy');
 		$directory = vfsStream::url('tracy');
@@ -75,22 +110,20 @@ class ConsoleBlueScreenExceptionListenerTest extends \PHPUnit\Framework\TestCase
 			->method('getErrorOutput')
 			->will(self::returnValue($errorOutput));
 
-		$exception = new \Exception('Foobar!');
-
-		$event = new ConsoleErrorEvent($input, $output, $exception, $command);
+		$event = new ConsoleErrorEvent($input, $output, $throwable, $command);
 
 		$logger = $this->createMock(TracyLogger::class);
 		$logger
 			->expects(self::once())
 			->method('getExceptionFile')
-			->with($exception)
+			->with($throwable)
 			->will(self::returnValue($file));
 
 		$blueScreen = $this->createMock(BlueScreen::class);
 		$blueScreen
 			->expects(self::once())
 			->method('renderToFile')
-			->with($exception, $file);
+			->with($throwable, $file);
 
 		$listener = new ConsoleBlueScreenErrorListener(
 			$logger,

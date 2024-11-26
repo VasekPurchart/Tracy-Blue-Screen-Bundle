@@ -6,30 +6,12 @@ namespace VasekPurchart\TracyBlueScreenBundle\DependencyInjection;
 
 use Generator;
 use PHPUnit\Framework\Assert;
-use Symfony\Bundle\TwigBundle\DependencyInjection\TwigExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Tracy\BlueScreen;
 
 class TracyBlueScreenExtensionTest extends \Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase
 {
-
-	public function setUp(): void
-	{
-		parent::setUp();
-		$this->setParameter('kernel.root_dir', __DIR__);
-		$this->setParameter('kernel.project_dir', __DIR__);
-		$this->setParameter('kernel.logs_dir', __DIR__);
-		$this->setParameter('kernel.cache_dir', __DIR__ . '/tests-cache-dir');
-		$this->setParameter('kernel.environment', 'dev');
-		$this->setParameter('kernel.debug', true);
-		$this->setParameter('kernel.bundles_metadata', [
-			'TwigBundle' => [
-				'namespace' => 'Symfony\\Bundle\\TwigBundle',
-				'path' => __DIR__,
-			],
-		]);
-	}
 
 	/**
 	 * @return \Symfony\Component\DependencyInjection\Extension\ExtensionInterface[]
@@ -38,21 +20,12 @@ class TracyBlueScreenExtensionTest extends \Matthias\SymfonyDependencyInjectionT
 	{
 		return [
 			new TracyBlueScreenExtension(),
-			new TwigExtension(),
 		];
-	}
-
-	public function testDependsOnTwigBundle(): void
-	{
-		$containerBuilder = new ContainerBuilder();
-		$extension = new TracyBlueScreenExtension();
-
-		$this->expectException(\VasekPurchart\TracyBlueScreenBundle\DependencyInjection\TwigBundleRequiredException::class);
-		$extension->prepend($containerBuilder);
 	}
 
 	public function testOnlyAddCollapsePaths(): void
 	{
+		$this->setKernelParameters();
 		$this->loadExtensions();
 
 		$this->assertContainerBuilderHasService('vasek_purchart.tracy_blue_screen.tracy.blue_screen.default', BlueScreen::class);
@@ -120,6 +93,7 @@ class TracyBlueScreenExtensionTest extends \Matthias\SymfonyDependencyInjectionT
 		array $expectedCollapsePaths
 	): void
 	{
+		$this->setKernelParameters();
 		$this->loadExtensions($configuration);
 
 		$this->assertContainerBuilderHasParameter('vasek_purchart.tracy_blue_screen.blue_screen.collapse_paths');
@@ -129,6 +103,16 @@ class TracyBlueScreenExtensionTest extends \Matthias\SymfonyDependencyInjectionT
 			$this->assertArrayContainsStringPart($expectedCollapsePath, $collapsePaths);
 		}
 		Assert::assertCount(count($expectedCollapsePaths), $collapsePaths);
+	}
+
+	private function setKernelParameters(): void
+	{
+		$this->setParameter('kernel.root_dir', __DIR__);
+		$this->setParameter('kernel.project_dir', __DIR__);
+		$this->setParameter('kernel.logs_dir', __DIR__);
+		$this->setParameter('kernel.cache_dir', __DIR__ . '/tests-cache-dir');
+		$this->setParameter('kernel.environment', 'dev');
+		$this->setParameter('kernel.debug', true);
 	}
 
 	/**
