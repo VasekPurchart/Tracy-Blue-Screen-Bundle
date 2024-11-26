@@ -15,12 +15,6 @@ class TracyBlueScreenExtension
 	implements \Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface
 {
 
-	public const CONTAINER_PARAMETER_BLUE_SCREEN_COLLAPSE_PATHS = 'vasek_purchart.tracy_blue_screen.blue_screen.collapse_paths';
-	public const CONTAINER_PARAMETER_CONSOLE_BROWSER = 'vasek_purchart.tracy_blue_screen.console.browser';
-	public const CONTAINER_PARAMETER_CONSOLE_LISTENER_PRIORITY = 'vasek_purchart.tracy_blue_screen.console.listener_priority';
-	public const CONTAINER_PARAMETER_CONSOLE_LOG_DIRECTORY = 'vasek_purchart.tracy_blue_screen.console.log_directory';
-	public const CONTAINER_PARAMETER_CONTROLLER_LISTENER_PRIORITY = 'vasek_purchart.tracy_blue_screen.controller.listener_priority';
-
 	private const TWIG_BUNDLE_ALIAS = 'twig';
 	private const TWIG_TEMPLATES_NAMESPACE = 'Twig';
 
@@ -52,28 +46,28 @@ class TracyBlueScreenExtension
 	public function loadInternal(array $mergedConfig, ContainerBuilder $container): void
 	{
 		$container->setParameter(
-			self::CONTAINER_PARAMETER_BLUE_SCREEN_COLLAPSE_PATHS,
+			'vasek_purchart.tracy_blue_screen.blue_screen.collapse_paths',
 			$mergedConfig[Configuration::SECTION_BLUE_SCREEN][Configuration::PARAMETER_COLLAPSE_PATHS]
 		);
 		$container->setParameter(
-			self::CONTAINER_PARAMETER_CONSOLE_BROWSER,
+			'vasek_purchart.tracy_blue_screen.console.browser',
 			$mergedConfig[Configuration::SECTION_CONSOLE][Configuration::PARAMETER_CONSOLE_BROWSER]
 		);
 		$container->setParameter(
-			self::CONTAINER_PARAMETER_CONSOLE_LISTENER_PRIORITY,
+			'vasek_purchart.tracy_blue_screen.console.listener_priority',
 			$mergedConfig[Configuration::SECTION_CONSOLE][Configuration::PARAMETER_CONSOLE_LISTENER_PRIORITY]
 		);
 		$container->setParameter(
-			self::CONTAINER_PARAMETER_CONSOLE_LOG_DIRECTORY,
+			'vasek_purchart.tracy_blue_screen.console.log_directory',
 			$mergedConfig[Configuration::SECTION_CONSOLE][Configuration::PARAMETER_CONSOLE_LOG_DIRECTORY]
 		);
 		$container->setParameter(
-			self::CONTAINER_PARAMETER_CONTROLLER_LISTENER_PRIORITY,
+			'vasek_purchart.tracy_blue_screen.controller.listener_priority',
 			$mergedConfig[Configuration::SECTION_CONTROLLER][Configuration::PARAMETER_CONTROLLER_LISTENER_PRIORITY]
 		);
 
 		$loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/config'));
-		$loader->load('services.yml');
+		$loader->load('services.yaml');
 
 		$environment = $container->getParameter('kernel.environment');
 		$debug = $container->getParameter('kernel.debug');
@@ -83,14 +77,14 @@ class TracyBlueScreenExtension
 			$environment,
 			$debug
 		)) {
-			$loader->load('console_listener.yml');
+			$loader->load('console_listener.yaml');
 		}
 		if ($this->isEnabled(
 			$mergedConfig[Configuration::SECTION_CONTROLLER][Configuration::PARAMETER_CONTROLLER_ENABLED],
 			$environment,
 			$debug
 		)) {
-			$loader->load('controller_listener.yml');
+			$loader->load('controller_listener.yaml');
 		}
 	}
 

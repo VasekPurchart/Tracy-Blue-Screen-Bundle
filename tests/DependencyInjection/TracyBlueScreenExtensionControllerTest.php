@@ -68,7 +68,7 @@ class TracyBlueScreenExtensionControllerTest extends \Matthias\SymfonyDependency
 		$this->assertContainerBuilderHasService('vasek_purchart.tracy_blue_screen.blue_screen.controller_blue_screen_exception_listener', ControllerBlueScreenExceptionListener::class);
 		$this->assertContainerBuilderHasServiceDefinitionWithTag('vasek_purchart.tracy_blue_screen.blue_screen.controller_blue_screen_exception_listener', 'kernel.event_listener', [
 			'event' => 'kernel.exception',
-			'priority' => '%' . TracyBlueScreenExtension::CONTAINER_PARAMETER_CONTROLLER_LISTENER_PRIORITY . '%',
+			'priority' => '%vasek_purchart.tracy_blue_screen.controller.listener_priority%',
 		]);
 	}
 
@@ -95,7 +95,7 @@ class TracyBlueScreenExtensionControllerTest extends \Matthias\SymfonyDependency
 			],
 		]);
 
-		$this->assertContainerBuilderHasParameter(TracyBlueScreenExtension::CONTAINER_PARAMETER_CONTROLLER_LISTENER_PRIORITY, 123);
+		$this->assertContainerBuilderHasParameter('vasek_purchart.tracy_blue_screen.controller.listener_priority', 123);
 	}
 
 	/**

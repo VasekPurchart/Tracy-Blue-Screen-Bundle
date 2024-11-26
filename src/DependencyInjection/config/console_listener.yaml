@@ -1,0 +1,13 @@
+services:
+    vasek_purchart.tracy_blue_screen.blue_screen.console_blue_screen_error_listener:
+        class: 'VasekPurchart\TracyBlueScreenBundle\BlueScreen\ConsoleBlueScreenErrorListener'
+        arguments:
+            $tracyLogger: '@vasek_purchart.tracy_blue_screen.tracy.logger'
+            $blueScreen: '@vasek_purchart.tracy_blue_screen.tracy.blue_screen'
+            $logDirectory: '%vasek_purchart.tracy_blue_screen.console.log_directory%'
+            $browser: '%vasek_purchart.tracy_blue_screen.console.browser%'
+        tags:
+            -
+                name: 'kernel.event_listener'
+                event: 'console.error'
+                priority: '%vasek_purchart.tracy_blue_screen.console.listener_priority%'

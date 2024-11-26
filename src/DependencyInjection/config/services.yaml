@@ -2,8 +2,8 @@ services:
     vasek_purchart.tracy_blue_screen.tracy.blue_screen: '@vasek_purchart.tracy_blue_screen.tracy.blue_screen.default'
 
     vasek_purchart.tracy_blue_screen.tracy.blue_screen.default:
-        class: Tracy\BlueScreen
-        factory: [VasekPurchart\TracyBlueScreenBundle\BlueScreen\BlueScreenFactory, create]
+        class: 'Tracy\BlueScreen'
+        factory: 'VasekPurchart\TracyBlueScreenBundle\BlueScreen\BlueScreenFactory::create'
         arguments:
             - '%vasek_purchart.tracy_blue_screen.blue_screen.collapse_paths%'
         public: false
@@ -11,6 +11,6 @@ services:
     vasek_purchart.tracy_blue_screen.tracy.logger: '@vasek_purchart.tracy_blue_screen.tracy.logger.default'
 
     vasek_purchart.tracy_blue_screen.tracy.logger.default:
-        class: Tracy\Logger
-        factory: [Tracy\Debugger, getLogger]
+        class: 'Tracy\Logger'
+        factory: 'Tracy\Debugger::getLogger'
         public: false

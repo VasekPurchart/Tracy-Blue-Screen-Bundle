@@ -68,7 +68,7 @@ class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInj
 		$this->assertContainerBuilderHasService('vasek_purchart.tracy_blue_screen.blue_screen.console_blue_screen_error_listener', ConsoleBlueScreenErrorListener::class);
 		$this->assertContainerBuilderHasServiceDefinitionWithTag('vasek_purchart.tracy_blue_screen.blue_screen.console_blue_screen_error_listener', 'kernel.event_listener', [
 			'event' => 'console.error',
-			'priority' => '%' . TracyBlueScreenExtension::CONTAINER_PARAMETER_CONSOLE_LISTENER_PRIORITY . '%',
+			'priority' => '%vasek_purchart.tracy_blue_screen.console.listener_priority%',
 		]);
 	}
 
@@ -92,7 +92,7 @@ class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInj
 	{
 		yield 'default logs dir is kernel logs dir' => [
 			'configuration' => [],
-			'parameterName' => TracyBlueScreenExtension::CONTAINER_PARAMETER_CONSOLE_LOG_DIRECTORY,
+			'parameterName' => 'vasek_purchart.tracy_blue_screen.console.log_directory',
 			'expectedParameterValue' => __DIR__ . '/tests-logs-dir',
 		];
 
@@ -104,13 +104,13 @@ class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInj
 					],
 				],
 			],
-			'parameterName' => TracyBlueScreenExtension::CONTAINER_PARAMETER_CONSOLE_LOG_DIRECTORY,
+			'parameterName' => 'vasek_purchart.tracy_blue_screen.console.log_directory',
 			'expectedParameterValue' => __DIR__ . '/foobar',
 		];
 
 		yield 'default browser is null' => [
 			'configuration' => [],
-			'parameterName' => TracyBlueScreenExtension::CONTAINER_PARAMETER_CONSOLE_BROWSER,
+			'parameterName' => 'vasek_purchart.tracy_blue_screen.console.browser',
 			'expectedParameterValue' => null,
 		];
 
@@ -122,7 +122,7 @@ class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInj
 					],
 				],
 			],
-			'parameterName' => TracyBlueScreenExtension::CONTAINER_PARAMETER_CONSOLE_BROWSER,
+			'parameterName' => 'vasek_purchart.tracy_blue_screen.console.browser',
 			'expectedParameterValue' => 'google-chrome',
 		];
 
@@ -134,7 +134,7 @@ class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInj
 					],
 				],
 			],
-			'parameterName' => TracyBlueScreenExtension::CONTAINER_PARAMETER_CONSOLE_LISTENER_PRIORITY,
+			'parameterName' => 'vasek_purchart.tracy_blue_screen.console.listener_priority',
 			'expectedParameterValue' => 123,
 		];
 	}
