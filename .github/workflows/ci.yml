@@ -127,7 +127,7 @@ jobs:
                 run: 'bin/phing composer-dependencies'
 
     tests:
-        name: 'Tests - PHP ${{ matrix.php-version }}, ${{ matrix.composer-dependencies }} dependencies'
+        name: 'Tests - PHP ${{ matrix.php-version }}, Symfony: ${{ matrix.symfony-version}}, Composer ${{ matrix.composer-dependencies }} dependencies'
         needs: 'lint'
         runs-on: 'ubuntu-latest'
 
@@ -138,6 +138,13 @@ jobs:
                     - '7.2'
                     - '7.3'
                     - '7.4'
+                symfony-version:
+                    - '4.4'
+                    # - '5.0' matthiasnoback/symfony-dependency-injection-test 4.3.0 requires symfony/config ^4.4 || ^5.3 || ^6.0
+                    # - '5.1' matthiasnoback/symfony-dependency-injection-test 4.3.0 requires symfony/config ^4.4 || ^5.3 || ^6.0
+                    # - '5.2' matthiasnoback/symfony-dependency-injection-test 4.3.0 requires symfony/config ^4.4 || ^5.3 || ^6.0
+                    - '5.3'
+                    - '5.4'
                 composer-dependencies:
                     - 'highest'
                     - 'lowest'
@@ -164,6 +171,20 @@ jobs:
                 with:
                     dependency-versions: '${{ matrix.composer-dependencies }}'
             -
+                name: 'Install specific versions'
+                env:
+                    COMPOSER_PREFER_LOWEST: ${{ matrix.composer-dependencies == 'lowest' && 1 || 0 }}
+                run: |
+                    composer update \
+                        --ansi \
+                        --with 'symfony/config=${{ matrix.symfony-version }}.*' \
+                        --with 'symfony/console=${{ matrix.symfony-version }}.*' \
+                        --with 'symfony/dependency-injection=${{ matrix.symfony-version }}.*' \
+                        --with 'symfony/error-handler=${{ matrix.symfony-version }}.*' \
+                        --with 'symfony/framework-bundle=${{ matrix.symfony-version }}.*' \
+                        --with 'symfony/http-kernel=${{ matrix.symfony-version }}.*' \
+                        --with 'symfony/yaml=${{ matrix.symfony-version }}.*'
+            -
                 name: 'Run tests'
                 run: 'bin/phing tests'
             -
@@ -171,7 +192,7 @@ jobs:
                 env:
                     COVERALLS_REPO_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
                     COVERALLS_PARALLEL: true
-                    COVERALLS_FLAG_NAME: 'php-${{ matrix.php-version }}+${{ matrix.composer-dependencies }}-dependencies'
+                    COVERALLS_FLAG_NAME: 'php-${{ matrix.php-version }}+symfony-${{ matrix.symfony-version }}+${{ matrix.composer-dependencies }}-dependencies'
                 run: |
                     wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.4.3/php-coveralls.phar
                     php php-coveralls.phar --verbose --config build/coveralls.yml
