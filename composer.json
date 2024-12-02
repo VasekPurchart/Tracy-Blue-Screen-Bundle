@@ -16,7 +16,6 @@
 		"symfony/console": "^4.4|^5.0",
 		"symfony/dependency-injection": "^4.4|^5.0",
 		"symfony/error-handler": "^4.4.1|^5.0.1",
-		"symfony/http-foundation": "^4.4|^5.0",
 		"symfony/http-kernel": "^4.4|^5.0",
 		"symfony/yaml": "^4.4|^5.0",
 		"tracy/tracy": "^2.4"
