@@ -115,6 +115,7 @@ class ReplaceErrorControllerErrorRendererCompilerPassTest extends \Matthias\Symf
 	{
 		$this->setParameter('kernel.project_dir', __DIR__);
 		$this->setParameter('kernel.logs_dir', __DIR__ . '/tests-logs-dir');
+		$this->setParameter('kernel.build_dir', __DIR__ . '/tests-build-dir');
 		$this->setParameter('kernel.cache_dir', __DIR__ . '/tests-cache-dir');
 		$this->setParameter('kernel.environment', $kernelEnvironment);
 		$this->setParameter('kernel.debug', $kernelDebugParameter);
