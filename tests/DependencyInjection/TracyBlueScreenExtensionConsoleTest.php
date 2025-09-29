@@ -5,20 +5,12 @@ declare(strict_types = 1);
 namespace VasekPurchart\TracyBlueScreenBundle\DependencyInjection;
 
 use Generator;
+use PHPUnit\Framework\Assert;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use VasekPurchart\TracyBlueScreenBundle\BlueScreen\ConsoleBlueScreenErrorListener;
 
-class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase
+class TracyBlueScreenExtensionConsoleTest extends \PHPUnit\Framework\TestCase
 {
-
-	/**
-	 * @return \Symfony\Component\DependencyInjection\Extension\ExtensionInterface[]
-	 */
-	protected function getContainerExtensions(): array
-	{
-		return [
-			new TracyBlueScreenExtension(),
-		];
-	}
 
 	public function enabledDataProvider(): Generator
 	{
@@ -108,7 +100,7 @@ class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInj
 	 *
 	 * @param string $kernelEnvironment
 	 * @param bool $kernelDebugParameter
-	 * @param mixed[][] $configuration
+	 * @param mixed[][]|array $configuration
 	 * @param bool $expectToBeEnabled
 	 */
 	public function testEnabled(
@@ -118,17 +110,28 @@ class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInj
 		bool $expectToBeEnabled
 	): void
 	{
-		$this->setKernelParameters($kernelEnvironment, $kernelDebugParameter);
-		$this->loadExtensions($configuration);
+		$container = TracyBlueScreenExtensionTest::createContainer();
+		$this->setKernelParameters($container, $kernelEnvironment, $kernelDebugParameter);
+
+		$container->registerExtension(new TracyBlueScreenExtension());
+		TracyBlueScreenExtensionTest::loadRegisteredExtensionsUsingConfigurationsByAlias($container, $configuration);
+
+		$serviceId = 'vasek_purchart.tracy_blue_screen.blue_screen.console_blue_screen_error_listener';
 
 		if ($expectToBeEnabled) {
-			$this->assertContainerBuilderHasService('vasek_purchart.tracy_blue_screen.blue_screen.console_blue_screen_error_listener', ConsoleBlueScreenErrorListener::class);
-			$this->assertContainerBuilderHasServiceDefinitionWithTag('vasek_purchart.tracy_blue_screen.blue_screen.console_blue_screen_error_listener', 'kernel.event_listener', [
-				'event' => 'console.error',
-				'priority' => '%vasek_purchart.tracy_blue_screen.console.listener_priority%',
-			]);
+			TracyBlueScreenExtensionTest::assertContainerHasService($container, $serviceId);
+			TracyBlueScreenExtensionTest::assertContainerServiceIsOfType($container, $serviceId, ConsoleBlueScreenErrorListener::class);
+			TracyBlueScreenExtensionTest::assertContainerServiceHasTagWithAttributes(
+				$container,
+				$serviceId,
+				'kernel.event_listener',
+				[
+					'event' => 'console.error',
+					'priority' => '%vasek_purchart.tracy_blue_screen.console.listener_priority%',
+				]
+			);
 		} else {
-			$this->assertContainerBuilderNotHasService('vasek_purchart.tracy_blue_screen.blue_screen.console_blue_screen_error_listener');
+			TracyBlueScreenExtensionTest::assertContainerDoesNotHaveService($container, $serviceId);
 		}
 	}
 
@@ -189,7 +192,7 @@ class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInj
 	/**
 	 * @dataProvider configureContainerParameterDataProvider
 	 *
-	 * @param mixed[][] $configuration
+	 * @param mixed[][]|array $configuration
 	 * @param string $parameterName
 	 * @param mixed $expectedParameterValue
 	 */
@@ -199,30 +202,27 @@ class TracyBlueScreenExtensionConsoleTest extends \Matthias\SymfonyDependencyInj
 		$expectedParameterValue
 	): void
 	{
-		$this->setKernelParameters('dev', true);
-		$this->loadExtensions($configuration);
+		$container = TracyBlueScreenExtensionTest::createContainer();
+		$this->setKernelParameters($container, 'dev', true);
 
-		$this->assertContainerBuilderHasParameter($parameterName, $expectedParameterValue);
+		$container->registerExtension(new TracyBlueScreenExtension());
+		TracyBlueScreenExtensionTest::loadRegisteredExtensionsUsingConfigurationsByAlias($container, $configuration);
+
+		TracyBlueScreenExtensionTest::assertContainerHasParameter($container, $parameterName);
+		Assert::assertSame($expectedParameterValue, $container->getParameter($parameterName));
 	}
 
 	private function setKernelParameters(
+		ContainerBuilder $container,
 		string $kernelEnvironment,
 		bool $kernelDebugParameter
 	): void
 	{
-		$this->setParameter('kernel.project_dir', __DIR__);
-		$this->setParameter('kernel.logs_dir', __DIR__ . '/tests-logs-dir');
-		$this->setParameter('kernel.cache_dir', __DIR__ . '/tests-cache-dir');
-		$this->setParameter('kernel.environment', $kernelEnvironment);
-		$this->setParameter('kernel.debug', $kernelDebugParameter);
-	}
-
-	/**
-	 * @param mixed[] $configuration format: extensionAlias(string) => configuration(mixed[])
-	 */
-	private function loadExtensions(array $configuration = []): void
-	{
-		TracyBlueScreenExtensionTest::loadExtensionsToContainer($this->container, $configuration, $this->getMinimalConfiguration());
+		$container->setParameter('kernel.project_dir', __DIR__);
+		$container->setParameter('kernel.logs_dir', __DIR__ . '/tests-logs-dir');
+		$container->setParameter('kernel.cache_dir', __DIR__ . '/tests-cache-dir');
+		$container->setParameter('kernel.environment', $kernelEnvironment);
+		$container->setParameter('kernel.debug', $kernelDebugParameter);
 	}
 
 }

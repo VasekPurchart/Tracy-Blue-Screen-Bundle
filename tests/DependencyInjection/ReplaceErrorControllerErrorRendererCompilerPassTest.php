@@ -7,21 +7,12 @@ namespace VasekPurchart\TracyBlueScreenBundle\DependencyInjection;
 use Generator;
 use PHPUnit\Framework\Assert;
 use Symfony\Bundle\FrameworkBundle\DependencyInjection\FrameworkExtension;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\Controller\ErrorController;
 
-class ReplaceErrorControllerErrorRendererCompilerPassTest extends \Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractCompilerPassTestCase
+class ReplaceErrorControllerErrorRendererCompilerPassTest extends \PHPUnit\Framework\TestCase
 {
-
-	protected function registerCompilerPass(ContainerBuilder $container): void
-	{
-		$this->container->registerExtension(new FrameworkExtension());
-
-		$this->container->registerExtension(new TracyBlueScreenExtension());
-		$container->addCompilerPass(new ReplaceErrorControllerErrorRendererCompilerPass());
-	}
 
 	public function replaceErrorRendererDataProvider(): Generator
 	{
@@ -103,7 +94,7 @@ class ReplaceErrorControllerErrorRendererCompilerPassTest extends \Matthias\Symf
 	 *
 	 * @param string $kernelEnvironment
 	 * @param bool $kernelDebugParameter
-	 * @param mixed[]|null $tracyBlueScreenConfiguration
+	 * @param mixed[]|null|array $tracyBlueScreenConfiguration
 	 * @param bool $expectToBeReplaced
 	 */
 	public function testReplaceErrorRenderer(
@@ -113,54 +104,64 @@ class ReplaceErrorControllerErrorRendererCompilerPassTest extends \Matthias\Symf
 		bool $expectToBeReplaced
 	): void
 	{
-		$this->setParameter('kernel.project_dir', __DIR__);
-		$this->setParameter('kernel.logs_dir', __DIR__ . '/tests-logs-dir');
-		$this->setParameter('kernel.build_dir', __DIR__ . '/tests-build-dir');
-		$this->setParameter('kernel.cache_dir', __DIR__ . '/tests-cache-dir');
-		$this->setParameter('kernel.environment', $kernelEnvironment);
-		$this->setParameter('kernel.debug', $kernelDebugParameter);
-		$this->setParameter('kernel.container_class', __CLASS__);
+		$container = TracyBlueScreenExtensionTest::createContainer();
+		$container->registerExtension(new FrameworkExtension());
+		$container->registerExtension(new TracyBlueScreenExtension());
+		$container->addCompilerPass(new ReplaceErrorControllerErrorRendererCompilerPass());
 
-		$this->container->loadFromExtension('framework');
-		$this->container->loadFromExtension('tracy_blue_screen', $tracyBlueScreenConfiguration);
+		$container->setParameter('kernel.project_dir', __DIR__);
+		$container->setParameter('kernel.logs_dir', __DIR__ . '/tests-logs-dir');
+		$container->setParameter('kernel.build_dir', __DIR__ . '/tests-build-dir');
+		$container->setParameter('kernel.cache_dir', __DIR__ . '/tests-cache-dir');
+		$container->setParameter('kernel.environment', $kernelEnvironment);
+		$container->setParameter('kernel.debug', $kernelDebugParameter);
+		$container->setParameter('kernel.container_class', __CLASS__);
 
-		$this->compile();
+		$container->loadFromExtension('framework');
+		$container->loadFromExtension('tracy_blue_screen', $tracyBlueScreenConfiguration);
 
-		$this->assertContainerBuilderHasService('error_controller', ErrorController::class);
+		$container->compile();
+
+		$serviceId = 'error_controller';
+		TracyBlueScreenExtensionTest::assertContainerHasService($container, $serviceId);
+		TracyBlueScreenExtensionTest::assertContainerServiceIsOfType($container, $serviceId, ErrorController::class);
+
+		$serviceDefinition = $container->findDefinition($serviceId);
 
 		if ($expectToBeReplaced) {
-			$this->assertContainerBuilderHasServiceDefinitionWithArgument(
-				'error_controller',
-				'$errorRenderer',
-				new Reference('vasek_purchart.tracy_blue_screen.blue_screen.error_renderer')
-			);
+			$argument = $serviceDefinition->getArgument('$errorRenderer');
+			Assert::assertInstanceOf(Reference::class, $argument);
+			Assert::assertSame('vasek_purchart.tracy_blue_screen.blue_screen.error_renderer', $argument->__toString());
 		} else {
-			$this->assertContainerBuilderHasServiceDefinitionWithArgument(
-				'error_controller',
-				2,
-				new Reference('error_renderer')
-			);
+			$argument = $serviceDefinition->getArgument(2);
+			Assert::assertInstanceOf(Reference::class, $argument);
+			Assert::assertSame('error_renderer', $argument->__toString());
 		}
 	}
 
 	public function testCustomErrorControllerWithControllerEnabled(): void
 	{
-		$this->setParameter('kernel.root_dir', __DIR__);
-		$this->setParameter('kernel.project_dir', __DIR__);
-		$this->setParameter('kernel.logs_dir', __DIR__ . '/tests-logs-dir');
-		$this->setParameter('kernel.cache_dir', __DIR__ . '/tests-cache-dir');
-		$this->setParameter('kernel.environment', 'dev');
-		$this->setParameter('kernel.debug', true);
-		$this->setParameter('kernel.container_class', __CLASS__);
+		$container = TracyBlueScreenExtensionTest::createContainer();
+		$container->registerExtension(new FrameworkExtension());
+		$container->registerExtension(new TracyBlueScreenExtension());
+		$container->addCompilerPass(new ReplaceErrorControllerErrorRendererCompilerPass());
 
-		$this->container->loadFromExtension('framework');
-		$this->container->loadFromExtension('tracy_blue_screen');
+		$container->setParameter('kernel.root_dir', __DIR__);
+		$container->setParameter('kernel.project_dir', __DIR__);
+		$container->setParameter('kernel.logs_dir', __DIR__ . '/tests-logs-dir');
+		$container->setParameter('kernel.cache_dir', __DIR__ . '/tests-cache-dir');
+		$container->setParameter('kernel.environment', 'dev');
+		$container->setParameter('kernel.debug', true);
+		$container->setParameter('kernel.container_class', __CLASS__);
+
+		$container->loadFromExtension('framework');
+		$container->loadFromExtension('tracy_blue_screen');
 
 		$customErrorControllerClass = 'FooBar';
-		$this->container->setDefinition('error_controller', new Definition($customErrorControllerClass));
+		$container->setDefinition('error_controller', new Definition($customErrorControllerClass));
 
 		try {
-			$this->compile();
+			$container->compile();
 
 			Assert::fail('Exception expected');
 

@@ -8,29 +8,26 @@ use Generator;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Tracy\BlueScreen;
 
-class TracyBlueScreenExtensionTest extends \Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase
+class TracyBlueScreenExtensionTest extends \PHPUnit\Framework\TestCase
 {
-
-	/**
-	 * @return \Symfony\Component\DependencyInjection\Extension\ExtensionInterface[]
-	 */
-	protected function getContainerExtensions(): array
-	{
-		return [
-			new TracyBlueScreenExtension(),
-		];
-	}
 
 	public function testOnlyAddCollapsePaths(): void
 	{
-		$this->setKernelParameters();
-		$this->loadExtensions();
+		$container = self::createContainer();
+		$this->setKernelParameters($container);
 
-		$this->assertContainerBuilderHasService('vasek_purchart.tracy_blue_screen.tracy.blue_screen.default', BlueScreen::class);
+		$container->registerExtension(new TracyBlueScreenExtension());
+		self::loadRegisteredExtensionsUsingConfigurationsByAlias($container);
 
-		$blueScreen = $this->container->get('vasek_purchart.tracy_blue_screen.tracy.blue_screen.default');
+		$serviceId = 'vasek_purchart.tracy_blue_screen.tracy.blue_screen.default';
+
+		self::assertContainerHasService($container, $serviceId);
+		self::assertContainerServiceIsOfType($container, $serviceId, BlueScreen::class);
+
+		$blueScreen = $container->get($serviceId);
 		$collapsePaths = $blueScreen->collapsePaths;
 
 		$this->assertArrayContainsStringPart('/bootstrap.php.cache', $collapsePaths);
@@ -85,19 +82,22 @@ class TracyBlueScreenExtensionTest extends \Matthias\SymfonyDependencyInjectionT
 	/**
 	 * @dataProvider collapsePathsConfigurationDataProvider
 	 *
-	 * @param mixed[][] $configuration
-	 * @param string[] $expectedCollapsePaths
+	 * @param mixed[][]|array $configuration
+	 * @param string[]|array $expectedCollapsePaths
 	 */
 	public function testCollapsePathsConfiguration(
 		array $configuration,
 		array $expectedCollapsePaths
 	): void
 	{
-		$this->setKernelParameters();
-		$this->loadExtensions($configuration);
+		$container = self::createContainer();
+		$this->setKernelParameters($container);
 
-		$this->assertContainerBuilderHasParameter('vasek_purchart.tracy_blue_screen.blue_screen.collapse_paths');
-		$collapsePaths = $this->container->getParameter('vasek_purchart.tracy_blue_screen.blue_screen.collapse_paths');
+		$container->registerExtension(new TracyBlueScreenExtension());
+		self::loadRegisteredExtensionsUsingConfigurationsByAlias($container, $configuration);
+
+		self::assertContainerHasParameter($container, 'vasek_purchart.tracy_blue_screen.blue_screen.collapse_paths');
+		$collapsePaths = $container->getParameter('vasek_purchart.tracy_blue_screen.blue_screen.collapse_paths');
 
 		foreach ($expectedCollapsePaths as $expectedCollapsePath) {
 			$this->assertArrayContainsStringPart($expectedCollapsePath, $collapsePaths);
@@ -105,59 +105,144 @@ class TracyBlueScreenExtensionTest extends \Matthias\SymfonyDependencyInjectionT
 		Assert::assertCount(count($expectedCollapsePaths), $collapsePaths);
 	}
 
-	private function setKernelParameters(): void
-	{
-		$this->setParameter('kernel.project_dir', __DIR__);
-		$this->setParameter('kernel.logs_dir', __DIR__);
-		$this->setParameter('kernel.cache_dir', __DIR__ . '/tests-cache-dir');
-		$this->setParameter('kernel.environment', 'dev');
-		$this->setParameter('kernel.debug', true);
-	}
-
-	/**
-	 * @param mixed[] $configuration format: extensionAlias(string) => configuration(mixed[])
-	 */
-	private function loadExtensions(array $configuration = []): void
-	{
-		self::loadExtensionsToContainer($this->container, $configuration, $this->getMinimalConfiguration());
-	}
-
 	/**
 	 * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
-	 * @param mixed[] $configuration format: extensionAlias(string) => configuration(mixed[])
-	 * @param mixed[] $minimalConfiguration format: extensionAlias(string) => configuration(mixed[])
+	 * @param mixed[][]|array $configurationsByAlias format: extensionAlias(string) => configuration(mixed[])
 	 */
-	public static function loadExtensionsToContainer(
+	public static function loadRegisteredExtensionsUsingConfigurationsByAlias(
 		ContainerBuilder $container,
-		array $configuration = [],
-		array $minimalConfiguration = []
+		array $configurationsByAlias = []
 	): void
 	{
-		$configurations = [];
-		foreach ($container->getExtensions() as $extensionAlias => $extension) {
-			$configurations[$extensionAlias] = [];
-			if (array_key_exists($extensionAlias, $minimalConfiguration)) {
-				$container->loadFromExtension($extensionAlias, $minimalConfiguration[$extensionAlias]);
-				$configurations[$extensionAlias][] = $minimalConfiguration[$extensionAlias];
-			}
-			if (array_key_exists($extensionAlias, $configuration)) {
-				$container->loadFromExtension($extensionAlias, $configuration[$extensionAlias]);
-				$configurations[$extensionAlias][] = $configuration[$extensionAlias];
-			}
-		}
-		foreach ($container->getExtensions() as $extensionAlias => $extension) {
+		foreach ($container->getExtensions() as $extension) {
 			if ($extension instanceof PrependExtensionInterface) {
 				$extension->prepend($container);
 			}
 		}
+
 		foreach ($container->getExtensions() as $extensionAlias => $extension) {
-			$extension->load($configurations[$extensionAlias], $container);
+			if (array_key_exists($extensionAlias, $configurationsByAlias)) {
+				$extension->load([$configurationsByAlias[$extensionAlias]], $container);
+			} else {
+				$extension->load([], $container);
+			}
 		}
+	}
+
+	public static function createContainer(): ContainerBuilder
+	{
+		$container = new ContainerBuilder(new ParameterBag([]));
+		$container->getCompilerPassConfig()->setOptimizationPasses([]);
+		$container->getCompilerPassConfig()->setRemovingPasses([]);
+		$container->getCompilerPassConfig()->setAfterRemovingPasses([]);
+
+		return $container;
+	}
+	public static function assertContainerHasService(
+		ContainerBuilder $container,
+		string $serviceId
+	): void
+	{
+		Assert::assertTrue(
+			$container->has($serviceId),
+			sprintf('Expecting the container to have service `%s`.', $serviceId)
+		);
+	}
+
+	public static function assertContainerDoesNotHaveService(
+		ContainerBuilder $container,
+		string $serviceId
+	): void
+	{
+		Assert::assertFalse(
+			$container->has($serviceId),
+			sprintf('Expecting the container to not have service `%s`.', $serviceId)
+		);
+	}
+
+	public static function assertContainerServiceIsOfType(
+		ContainerBuilder $container,
+		string $serviceId,
+		string $expectedClassString
+	): void
+	{
+		$serviceDefinition = $container->findDefinition($serviceId);
+
+		Assert::assertSame(
+			$expectedClassString,
+			$container->getParameterBag()->resolveValue($serviceDefinition->getClass()),
+			sprintf('Expecting the service `%s` to be of type `%s`.', $serviceId, $expectedClassString)
+		);
+	}
+
+	public static function assertContainerServiceHasTag(
+		ContainerBuilder $container,
+		string $serviceId,
+		string $tagName
+	): void
+	{
+		$serviceDefinition = $container->findDefinition($serviceId);
+
+		Assert::assertTrue(
+			$serviceDefinition->hasTag($tagName),
+			sprintf('Expecting the service `%s` to have tag `%s`.', $serviceId, $tagName)
+		);
+	}
+
+	/**
+	 * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+	 * @param string $serviceId
+	 * @param string $tagName
+	 * @param mixed[]|array $expectedTagAttributes
+	 */
+	public static function assertContainerServiceHasTagWithAttributes(
+		ContainerBuilder $container,
+		string $serviceId,
+		string $tagName,
+		array $expectedTagAttributes
+	): void
+	{
+		self::assertContainerServiceHasTag($container, $serviceId, $tagName);
+
+		$serviceDefinition = $container->findDefinition($serviceId);
+		$allTagAttributes = $serviceDefinition->getTag($tagName);
+
+		if (count($allTagAttributes) === 0) {
+			Assert::fail(sprintf('Expecting the tag `%s` to have attributes.', $tagName));
+		}
+
+		foreach ($allTagAttributes as $tagAttributes) {
+			Assert::assertSame(
+				$expectedTagAttributes,
+				$tagAttributes,
+				sprintf('Expecting the tag `%s` to have expected attributes.', $serviceId)
+			);
+		}
+	}
+
+	public static function assertContainerHasParameter(
+		ContainerBuilder $container,
+		string $parameterName
+	): void
+	{
+		Assert::assertTrue(
+			$container->hasParameter($parameterName),
+			sprintf('Expecting the container to have parameter `%s`.', $parameterName)
+		);
+	}
+
+	private function setKernelParameters(ContainerBuilder $container): void
+	{
+		$container->setParameter('kernel.project_dir', __DIR__);
+		$container->setParameter('kernel.logs_dir', __DIR__);
+		$container->setParameter('kernel.cache_dir', __DIR__ . '/tests-cache-dir');
+		$container->setParameter('kernel.environment', 'dev');
+		$container->setParameter('kernel.debug', true);
 	}
 
 	/**
 	 * @param string $string
-	 * @param string[] $array
+	 * @param string[]|array $array
 	 */
 	private function assertArrayContainsStringPart(string $string, array $array): void
 	{
