@@ -5,7 +5,7 @@ services:
         class: Tracy\BlueScreen
         factory: [Cdn77\TracyBlueScreenBundle\BlueScreen\BlueScreenFactory, create]
         arguments:
-            - '%cdn77.tracy_blue_screen.blue_screen.collapse_paths%'
+            $collapsePaths: '%cdn77.tracy_blue_screen.blue_screen.collapse_paths%'
         public: false
 
     cdn77.tracy_blue_screen.tracy.logger: '@cdn77.tracy_blue_screen.tracy.logger.default'

@@ -13,6 +13,7 @@ use function sprintf;
 final class Configuration implements ConfigurationInterface
 {
     public const string ParameterCollapsePaths = 'collapse_paths';
+    public const string ParameterScrubber = 'scrubber';
     public const string ParameterConsoleBrowser = 'browser';
     public const string ParameterConsoleEnabled = 'enabled';
     public const string ParameterConsoleListenerPriority = 'listener_priority';
@@ -93,6 +94,11 @@ final class Configuration implements ConfigurationInterface
                                 '%kernel.project_dir%/bootstrap.php.cache',
                                 '%kernel.cache_dir%',
                             ])
+                            ->end()
+                        ->scalarNode(self::ParameterScrubber)
+                            //phpcs:ignore SlevomatCodingStandard.Files.LineLength.LineTooLong
+                            ->info('Service ID of a callable(string $key, mixed $value, ?string $class): bool that returns true for sensitive data to hide.')
+                            ->defaultNull()
                             ->end()
                         ->end()
                     ->end()

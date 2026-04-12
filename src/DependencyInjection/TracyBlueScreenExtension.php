@@ -7,6 +7,7 @@ namespace Cdn77\TracyBlueScreenBundle\DependencyInjection;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 
 use function assert;
@@ -17,6 +18,7 @@ use function is_string;
 final class TracyBlueScreenExtension extends ConfigurableExtension
 {
     public const string ContainerParameterBlueScreenCollapsePaths = 'cdn77.tracy_blue_screen.blue_screen.collapse_paths';
+    public const string ContainerParameterBlueScreenScrubber = 'cdn77.tracy_blue_screen.blue_screen.scrubber';
     public const string ContainerParameterConsoleBrowser = 'cdn77.tracy_blue_screen.console.browser';
     public const string ContainerParameterConsoleListenerPriority = 'cdn77.tracy_blue_screen.console.listener_priority';
     public const string ContainerParameterConsoleLogDirectory = 'cdn77.tracy_blue_screen.console.log_directory';
@@ -25,9 +27,16 @@ final class TracyBlueScreenExtension extends ConfigurableExtension
     /** @param mixed[] $mergedConfig */
     public function loadInternal(array $mergedConfig, ContainerBuilder $container): void
     {
+        /** @var array{collapse_paths: list<string>, scrubber: string|null} $blueScreenConfig */
+        $blueScreenConfig = $mergedConfig[Configuration::SectionBlueScreen];
+
         $container->setParameter(
             self::ContainerParameterBlueScreenCollapsePaths,
-            $mergedConfig[Configuration::SectionBlueScreen][Configuration::ParameterCollapsePaths],
+            $blueScreenConfig[Configuration::ParameterCollapsePaths],
+        );
+        $container->setParameter(
+            self::ContainerParameterBlueScreenScrubber,
+            $blueScreenConfig[Configuration::ParameterScrubber],
         );
         $container->setParameter(
             self::ContainerParameterConsoleBrowser,
@@ -48,6 +57,12 @@ final class TracyBlueScreenExtension extends ConfigurableExtension
 
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/config'));
         $loader->load('services.yml');
+
+        $scrubberServiceId = $blueScreenConfig[Configuration::ParameterScrubber];
+        if ($scrubberServiceId !== null) {
+            $container->getDefinition('cdn77.tracy_blue_screen.tracy.blue_screen.default')
+                ->setArgument('$scrubber', new Reference($scrubberServiceId));
+        }
 
         $environment = $container->getParameter('kernel.environment');
         assert(is_string($environment));
